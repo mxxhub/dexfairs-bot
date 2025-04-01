@@ -33,8 +33,7 @@ const getinfoInDB = async () => {
   });
 };
 
-export const getNewPairInfoHandler = async (msg: any) => {
-  await bot.sendMessage(msg.chat.id, `New pairs is been detecting.`);
+export const getNewPairInfoHandler = async () => {
   console.log("New pairs is been detecting.");
   eventEmitter.on("newPair", async ({ token0, token1, pair }) => {
     try {
@@ -46,17 +45,12 @@ export const getNewPairInfoHandler = async (msg: any) => {
 
       setTimeout(async () => {
         const pairInfo = await getPairInfo("ethereum", pairAdd);
-        if (pairInfo.data) {
-          await saveData(pairInfo?.data);
-        }
 
-        if (pairInfo?.success) {
-          const pairData = pairInfo?.data;
-          console.log("pairData:", pairData);
-          await sendMessage(msg.chat.id, pairData);
-          await sendToChannels(pairData);
+        if (pairInfo.success) {
+          await saveData(pairInfo.data);
+          await sendToChannels(pairInfo.data);
         } else {
-          console.log("Error fetching pair info:", pairInfo?.message);
+          console.log("Error fetching pair info:", pairInfo.message);
         }
       }, 2 * 60 * 1000); // 2 mins delay
     } catch (err) {

@@ -14,7 +14,7 @@ interface PairData {
   marketCap: number;
 }
 
-export const startMarketCapMonitoring = (msg: any) => {
+export const startMarketCapMonitoring = () => {
   console.log("start marketcap monitoring");
   // Run every minute
   cron.schedule("*/5 * * * *", async () => {
