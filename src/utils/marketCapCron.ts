@@ -55,7 +55,7 @@ export const startMarketCapMonitoring = (msg: any) => {
   Current Market Cap: $${currentMarketCap}
   Chain: ${pair.chainId}
   
-  ⚠️ Market cap has fallen below $1,000!
+  ⚠️ Market cap has fallen below 20%
   `;
 
                 const sendPromises = targetChannels.map(async (channelId) => {

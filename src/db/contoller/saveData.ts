@@ -9,15 +9,13 @@ interface PairData {
 export const saveData = async (pairData: PairData) => {
   try {
     // Validate required fields
-    if (!pairData?.pairAddress || !pairData?.chainId) {
-      throw new Error("Missing required fields: pairAddress or chainId");
-    }
+    if (!pairData) return;
 
     // Create new pair instance
     const pair = new Pair({
       chainId: pairData.chainId,
       pairAddress: pairData.pairAddress,
-      marketCap: pairData.marketCap || 0, // Default to 0 if not provided
+      marketCap: pairData.marketCap, // Default to 0 if not provided
     });
 
     // Save and return the result

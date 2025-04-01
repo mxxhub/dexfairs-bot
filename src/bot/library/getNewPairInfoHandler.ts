@@ -46,7 +46,9 @@ export const getNewPairInfoHandler = async (msg: any) => {
 
       setTimeout(async () => {
         const pairInfo = await getPairInfo("ethereum", pairAdd);
-        await saveData(pairInfo?.data);
+        if (pairInfo.data) {
+          await saveData(pairInfo?.data);
+        }
 
         if (pairInfo?.success) {
           const pairData = pairInfo?.data;
