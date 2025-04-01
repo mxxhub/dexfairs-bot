@@ -24,15 +24,15 @@ export const sendToChannels = async (pairData: any) => {
           `
 🔗 Chain: ${pairData.chainId || "Ethereum"}
 📊 DEX: ${pairData.dexId || "Uniswap"}
-📍 Pair Address: \`<code>${pairData.pairAddress || "N/A"}</code>\`
+📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
 
 💠 Base Token:
-   • Address: \`<code>${pairData.baseToken?.address || "N/A"}</code>\`
+   • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
    • Name: ${pairData.baseToken?.name || "N/A"}
    • Symbol: ${pairData.baseToken?.symbol || "N/A"}
 
 💱 Quote Token:
-   • Address: \`<code>${pairData.quoteToken?.address || "N/A"}</code>\`
+   • Address: <code>${pairData.quoteToken?.address || "N/A"}</code>
    • Name: ${pairData.quoteToken?.name || "N/A"}
    • Symbol: ${pairData.quoteToken?.symbol || "N/A"}
 
@@ -79,15 +79,15 @@ export const sendMessage = async (msg: any, pairData: any) => {
     `
 🔗 Chain: ${pairData.chainId || "Ethereum"}
 📊 DEX: ${pairData.dexId || "Uniswap"}
-📍 Pair Address: \`<code>${pairData.pairAddress || "N/A"}</code>\`
+📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
 
 💠 Base Token:
-• Address: \`<code>${pairData.baseToken?.address || "N/A"}</code>\`
+• Address: <code>${pairData.baseToken?.address || "N/A"}</code>
 • Name: ${pairData.baseToken?.name || "N/A"}
 • Symbol: ${pairData.baseToken?.symbol || "N/A"}
 
 💱 Quote Token:
-• Address: \`<code>${pairData.quoteToken?.address || "N/A"}</code>\`
+• Address: <code>${pairData.quoteToken?.address || "N/A"}</code>
 • Name: ${pairData.quoteToken?.name || "N/A"}
 • Symbol: ${pairData.quoteToken?.symbol || "N/A"}
 
