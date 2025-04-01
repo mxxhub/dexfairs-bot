@@ -2,7 +2,6 @@ import cron from "node-cron";
 import dotenv from "dotenv";
 import { getPairDataFromDB } from "../db/contoller/getData";
 import { getPairInfo } from "./getPairInfo";
-import { sendMessage, sendToChannels } from "./sendMsgChannel";
 import { bot } from "../bot/index";
 import { getTargetChannels } from "./marketCapFilter";
 

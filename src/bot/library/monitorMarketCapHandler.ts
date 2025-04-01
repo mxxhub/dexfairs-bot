@@ -1,5 +1,3 @@
-import { removeAnswerCallback } from "./index";
-import { bot } from "../index";
 import { startMarketCapMonitoring } from "../../utils/marketCapCron";
 
 export const monitorMarketCapHandler = async () => {
