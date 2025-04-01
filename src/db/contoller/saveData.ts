@@ -1,24 +1,35 @@
 import { Pair } from "../model/model";
-
+// Interface for pair data
 interface PairData {
-  chainId: string;
+  chainId: string | number;
   pairAddress: string;
   marketCap: number;
 }
 
 export const saveData = async (pairData: PairData) => {
   try {
-    console.log(pairData);
+    // Validate required fields
+    if (!pairData?.pairAddress || !pairData?.chainId) {
+      throw new Error("Missing required fields: pairAddress or chainId");
+    }
+
+    // Create new pair instance
     const pair = new Pair({
       chainId: pairData.chainId,
       pairAddress: pairData.pairAddress,
-      marketCap: pairData.marketCap,
+      marketCap: pairData.marketCap || 0, // Default to 0 if not provided
     });
-    const savePair = await pair.save();
-    console.log("Pair data saved successfully", savePair);
-    return savePair;
-  } catch (err) {
-    console.log("Error saving pair data:", err);
-    throw err;
+
+    // Save and return the result
+    const savedPair = await pair.save();
+    if (!savedPair) {
+      console.log("Error saving pair data");
+      return;
+    }
+    console.log("Pair data saved successfully:");
+
+    return savedPair;
+  } catch (error) {
+    console.log("Error saving pair data:", error);
   }
 };

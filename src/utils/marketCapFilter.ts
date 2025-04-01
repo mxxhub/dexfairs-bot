@@ -11,13 +11,6 @@ interface MarketCapRange {
   channelId: string;
 }
 
-interface DropAlert {
-  channels: string[];
-  message: string;
-}
-
-const DROP_THRESHOLD = 0.2;
-
 const MARKET_CAP_RANGES: MarketCapRange[] = [
   {
     min: MARKET_CAP_LOW,
@@ -40,34 +33,4 @@ export const getTargetChannels = (marketCap: number): string[] => {
   return MARKET_CAP_RANGES.filter((range) => marketCap >= range.min)
     .map((range) => range.channelId)
     .filter((channelId) => channelId !== ""); // Remove empty channel IDs
-};
-
-export const checkMarketCapDrops = (marketCap: number): DropAlert[] => {
-  if (isNaN(marketCap)) return [];
-
-  const alerts: DropAlert[] = [];
-
-  // Check for drops below 20% of each threshold
-  if (marketCap < MARKET_CAP_LOW * DROP_THRESHOLD) {
-    alerts.push({
-      channels: [process.env.CHANNEL_1 || ""],
-      message: `⚠️ Market cap ($${marketCap}) has dropped below 20% of LOW threshold ($${MARKET_CAP_LOW})`,
-    });
-  }
-
-  if (marketCap < MARKET_CAP_MEDIUM * DROP_THRESHOLD) {
-    alerts.push({
-      channels: [process.env.CHANNEL_2 || ""],
-      message: `⚠️ Market cap ($${marketCap}) has dropped below 20% of MEDIUM threshold ($${MARKET_CAP_MEDIUM})`,
-    });
-  }
-
-  if (marketCap < MARKET_CAP_HIGH * DROP_THRESHOLD) {
-    alerts.push({
-      channels: [process.env.CHANNEL_3 || ""],
-      message: `⚠️ Market cap ($${marketCap}) has dropped below 20% of HIGH threshold ($${MARKET_CAP_HIGH})`,
-    });
-  }
-
-  return alerts.filter((alert) => alert.channels[0] !== "");
 };

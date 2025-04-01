@@ -14,7 +14,12 @@ export const startHandler = async (msg: any) => {
         reply_markup: {
           inline_keyboard: [
             [{ text: "🟢 Get New Pairs", callback_data: "getNewPair" }],
-            [{ text: "🟠 Close", callback_data: "close" }],
+            [
+              {
+                text: "🟠 Monitor MarketCap",
+                callback_data: "monitorMarketCap",
+              },
+            ],
           ],
         },
       }

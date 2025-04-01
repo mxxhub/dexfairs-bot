@@ -4,13 +4,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec ts-node src/index1.ts"
+    "dev": "nodemon --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/node-cron": "^3.0.11",
     "@types/node-telegram-bot-api": "^0.64.8",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",

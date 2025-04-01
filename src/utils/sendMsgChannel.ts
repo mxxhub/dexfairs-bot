@@ -1,5 +1,5 @@
 import { bot } from "../bot/index";
-import { checkMarketCapDrops, getTargetChannels } from "./marketCapFilter";
+import { getTargetChannels } from "./marketCapFilter";
 
 const CHANNELS = {
   CHANNEL_1: process.env.CHANNEL_1 || "",
@@ -11,16 +11,6 @@ export const sendToChannels = async (pairData: any) => {
   try {
     const marketCap = Number(pairData?.marketCap);
     const targetChannels = getTargetChannels(marketCap);
-    const dropAlerts = checkMarketCapDrops(marketCap);
-
-    for (const alert of dropAlerts) {
-      for (const channelId of alert.channels) {
-        await bot.sendMessage(channelId, alert.message, {
-          parse_mode: "HTML",
-          disable_web_page_preview: true,
-        });
-      }
-    }
 
     if (targetChannels.length === 0) {
       console.log(`No channels match market cap: ${marketCap}`);
@@ -120,5 +110,12 @@ export const sendMessage = async (msg: any, pairData: any) => {
       parse_mode: "HTML",
       disable_web_page_preview: true,
     }
+  );
+};
+
+export const sendDropAlert = async (msg: any, pairData: any) => {
+  await bot.sendMessage(
+    msg,
+    `Pair ${pairData.pairAddress} has dropped below 20% of its market cap`
   );
 };

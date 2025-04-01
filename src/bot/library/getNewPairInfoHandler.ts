@@ -2,7 +2,10 @@ import { eventEmitter } from "../../utils/getNewPair";
 import { getPairInfo } from "../../utils/getPairInfo";
 import { sendToChannels } from "../../utils/sendMsgChannel";
 import { sendMessage } from "../../utils/sendMsgChannel";
+import { saveData } from "../../db/contoller/saveData";
 import { bot } from "../../bot/index";
+import { getPairDataFromDB } from "../../db/contoller/getData";
+// import { getMarketCapCron } from "../../utils/getMarketCap";
 
 let gPairData: Array<any> = [];
 
@@ -17,6 +20,19 @@ const test = async () => {
 
 // test();
 
+const getinfoInDB = async () => {
+  const data = await getPairDataFromDB();
+  if (!data) return;
+  await data.map(async (each: any) => {
+    // console.log(each.pairAddress);
+    // console.log(each.marketCap);
+    return {
+      pairAddress: each.pairAddress,
+      marketCap: each.marketCap,
+    };
+  });
+};
+
 export const getNewPairInfoHandler = async (msg: any) => {
   await bot.sendMessage(msg.chat.id, `New pairs is been detecting.`);
   console.log("New pairs is been detecting.");
@@ -30,6 +46,8 @@ export const getNewPairInfoHandler = async (msg: any) => {
 
       setTimeout(async () => {
         const pairInfo = await getPairInfo("ethereum", pairAdd);
+        await saveData(pairInfo?.data);
+
         if (pairInfo?.success) {
           const pairData = pairInfo?.data;
           console.log("pairData:", pairData);

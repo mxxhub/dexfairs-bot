@@ -1,6 +1,5 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { saveData } from "../db/contoller/saveData";
 
 dotenv.config();
 
@@ -33,8 +32,6 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
         message: `Invalid market cap or below minimum requirement (${MIN_MARKET_CAP})`,
       };
     }
-
-    await saveData(response.data.pair);
 
     return {
       success: true,
