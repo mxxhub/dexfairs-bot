@@ -45,23 +45,24 @@ First Market Cap: $${pairData.marketCap}
 Current Market Cap: $${currentMarketCap}
 Chain: ${pairData.chainId}
 
-⚠️ Market cap has fallen below 20%
+⚠️ Market cap has fallen below ${marketCapPercentage * 100}%
 `;
 
-      const sendPromises = targetChannels.map(async (channelId) => {
+      for (let i = 0; i < targetChannels.length; i++) {
         try {
-          await bot.sendMessage(channelId, alertMessage, {
+          await bot.sendMessage(Number(targetChannels[i]), alertMessage, {
             parse_mode: "HTML",
             disable_web_page_preview: true,
           });
-          console.log(`Alert sent to channel ${channelId}`);
+          console.log(`Alert sent to channel ${Number(targetChannels[i])}`);
         } catch (error) {
-          console.error(`Error sending alert to channel ${channelId}:`, error);
+          console.error(
+            `Error sending alert to channel ${Number(targetChannels[i])}:`,
+            error
+          );
         }
-      });
+      }
 
-      console.log(`Alert sent for pair ${pairData.pairAddress}`);
-      await Promise.all(sendPromises);
       await deletePairData(pairData.pairAddress);
 
       for (let j = 0; j < cronjobs.length; j++) {
