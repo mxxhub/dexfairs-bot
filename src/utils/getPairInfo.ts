@@ -39,6 +39,5 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
     };
   } catch (err) {
     console.log("Error fetching pair info: ", err);
-    throw err;
   }
 };

@@ -15,14 +15,13 @@ export const startMarketCapMonitoring = async () => {
   const pairs = await getPairDataFromDB();
   if (pairs && pairs.length > 0) {
     for (let i = 0; i < pairs.length; i++) {
-      const job = cron.schedule("*/5 * * * *", async () => {
-        await monitorPairMC(pairs[i] as IPair);
+      const job = cron.schedule("5 * * * *", () => {
+        monitorPairMC(pairs[i] as IPair);
       });
       cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
     }
   }
 };
-startMarketCapMonitoring();
 
 export const monitorPairMC = async (pairData: IPair) => {
   const targetChannels = getTargetChannels(pairData.marketCap);

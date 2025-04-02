@@ -18,12 +18,12 @@ export const getNewPairInfoHandler = async () => {
       setTimeout(async () => {
         const pairInfo = await getPairInfo("ethereum", pairAdd);
 
-        if (pairInfo.success) {
+        if (pairInfo && pairInfo.success) {
           await saveData(pairInfo.data)
             .then(() => {
               // push to cronjobs array
-              const job = cron.schedule("*/5 * * * *", async () => {
-                await monitorPairMC(pairInfo.data);
+              const job = cron.schedule("*/5 * * * *", () => {
+                monitorPairMC(pairInfo.data);
               });
 
               cronjobs.push({ job: job, pairAddress: pairAdd });
@@ -31,7 +31,7 @@ export const getNewPairInfoHandler = async () => {
             .catch((err) => console.log(err));
           await sendToChannels(pairInfo.data);
         } else {
-          console.log("Error fetching pair info:", pairInfo.message);
+          console.log("Error fetching pair info:", pairInfo?.message);
         }
       }, 2 * 60 * 1000); // 2 mins delay
     } catch (err) {
