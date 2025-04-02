@@ -19,41 +19,34 @@ const createProvider = () => {
 
 let provider = createProvider();
 
-const getNewPair = () => {
-  if (factoryContract) {
-    factoryContract.removeAllListeners("PairCreated");
-  }
-
-  console.log("Restarted the provider connection");
-
-  factoryContract = new ethers.Contract(
-    uniswapFactoryAddress,
-    factoryABI,
-    provider
-  );
-
-  factoryContract.on(
-    "PairCreated",
-    async (token0: string, token1: string, pair: string) => {
-      const network = await provider.getNetwork();
-      const chainId = network.chainId;
-      console.log(
-        "token0:",
-        token0,
-        "token1:",
-        token1,
-        "pair:",
-        pair,
-        "chainId:",
-        chainId
-      );
-      eventEmitter.emit("newPair", { token0, token1, pair });
+const getNewEthPair = () => {
+  try {
+    if (factoryContract) {
+      factoryContract.removeAllListeners("PairCreated");
     }
-  );
+
+    console.log("Restarted ETH provider connection");
+
+    factoryContract = new ethers.Contract(
+      uniswapFactoryAddress,
+      factoryABI,
+      provider
+    );
+
+    factoryContract.on(
+      "PairCreated",
+      async (token0: string, token1: string, pair: string) => {
+        console.log("token0:", token0, "token1:", token1, "pair:", pair);
+        eventEmitter.emit("newPair", { token0, token1, pair });
+      }
+    );
+  } catch (err) {
+    console.log("Error getting New ETH Par", err);
+  }
 };
 
-getNewPair();
+getNewEthPair();
 
-setInterval(getNewPair, 10 * 60 * 1000);
+setInterval(getNewEthPair, 10 * 60 * 1000);
 
 export { eventEmitter };
