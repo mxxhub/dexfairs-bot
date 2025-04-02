@@ -1,12 +1,6 @@
 import { bot } from "../bot/index";
 import { getTargetChannels } from "./marketCapFilter";
 
-const CHANNELS = {
-  CHANNEL_1: process.env.CHANNEL_1 || "",
-  CHANNEL_2: process.env.CHANNEL_2 || "",
-  CHANNEL_3: process.env.CHANNEL_3 || "",
-};
-
 export const sendToChannels = async (pairData: any) => {
   try {
     const marketCap = Number(pairData?.marketCap);

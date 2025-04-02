@@ -1,9 +1,9 @@
 import cron from "node-cron";
 import dotenv from "dotenv";
 import { getPairDataFromDB } from "../db/contoller/getData";
-import { getPairInfo } from "./getPairInfo";
+import { getPairInfo } from "../utils/getPairInfo";
 import { bot } from "../bot/index";
-import { getTargetChannels } from "./marketCapFilter";
+import { getTargetChannels } from "../utils/marketCapFilter";
 import { deletePairData } from "../db/contoller/deletePairData";
 import { IPair } from "../@types/global";
 
@@ -11,15 +11,19 @@ dotenv.config();
 
 export let cronjobs: { job: cron.ScheduledTask; pairAddress: string }[] = [];
 export const startMarketCapMonitoring = async () => {
-  console.log("Monitoring MarketCap");
-  const pairs = await getPairDataFromDB();
-  if (pairs && pairs.length > 0) {
-    for (let i = 0; i < pairs.length; i++) {
-      const job = cron.schedule("5 * * * *", () => {
-        monitorPairMC(pairs[i] as IPair);
-      });
-      cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
+  try {
+    console.log("Monitoring MarketCap");
+    const pairs = await getPairDataFromDB();
+    if (pairs && pairs.length > 0) {
+      for (let i = 0; i < pairs.length; i++) {
+        const job = cron.schedule("5 * * * *", () => {
+          monitorPairMC(pairs[i] as IPair);
+        });
+        cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
+      }
     }
+  } catch (err) {
+    console.log("Error in startMarketCapMonitoring:", err);
   }
 };
 

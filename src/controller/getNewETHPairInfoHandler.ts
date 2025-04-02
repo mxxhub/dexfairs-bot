@@ -1,9 +1,9 @@
 import cron from "node-cron";
-import { eventEmitter } from "../../utils/getNewPair";
-import { getPairInfo } from "../../utils/getPairInfo";
-import { sendToChannels } from "../../utils/sendMsgChannel";
-import { saveData } from "../../db/contoller/saveData";
-import { cronjobs, monitorPairMC } from "../../utils/marketCapCron";
+import { eventEmitter } from "../utils/getNewETHPair";
+import { getPairInfo } from "../utils/getPairInfo";
+import { sendToChannels } from "../utils/sendMsgChannel";
+import { saveData } from "../db/contoller/saveData";
+import { cronjobs, monitorPairMC } from "./marketCapCron";
 
 export const getNewPairInfoHandler = async () => {
   console.log("New pairs is been detecting.");

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { getNewPairInfoHandler } from "../bot/library/getNewPairInfoHandler";
-import { monitorMarketCapHandler } from "../bot/library/monitorMarketCapHandler";
+// import { getNewPairInfoHandler } from "../controller/getNewETHPairInfoHandler";
+// import { startMarketCapMonitoring } from "../utils/marketCapCron";
 dotenv.config();
 
 export const connectDataBase = async () => {
@@ -23,8 +23,8 @@ export const connectDataBase = async () => {
 
     if (result) {
       console.log("MongoDB connected successfully!");
-      await getNewPairInfoHandler();
-      await monitorMarketCapHandler();
+      // await getNewPairInfoHandler();
+      // await startMarketCapMonitoring();
     }
   } catch (err) {
     console.error(`MongoDB connect failed: ${err}`);

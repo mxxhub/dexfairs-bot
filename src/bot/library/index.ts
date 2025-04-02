@@ -1,4 +1,4 @@
-import { answerCallbacks } from "../index";
+import { answerCallbacks } from "../../bot/index";
 
 export const removeAnswerCallback = (chat: any) => {
   try {
