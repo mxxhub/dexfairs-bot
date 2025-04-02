@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { getNewPairInfoHandler } from "../bot/library/getNewPairInfoHandler";
 import { monitorMarketCapHandler } from "../bot/library/monitorMarketCapHandler";
-
 dotenv.config();
 
 export const connectDataBase = async () => {

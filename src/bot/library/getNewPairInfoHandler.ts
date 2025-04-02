@@ -1,7 +1,9 @@
+import cron from "node-cron";
 import { eventEmitter } from "../../utils/getNewPair";
 import { getPairInfo } from "../../utils/getPairInfo";
 import { sendToChannels } from "../../utils/sendMsgChannel";
 import { saveData } from "../../db/contoller/saveData";
+import { cronjobs, monitorPairMC } from "../../utils/marketCapCron";
 
 export const getNewPairInfoHandler = async () => {
   console.log("New pairs is been detecting.");
@@ -17,7 +19,16 @@ export const getNewPairInfoHandler = async () => {
         const pairInfo = await getPairInfo("ethereum", pairAdd);
 
         if (pairInfo.success) {
-          await saveData(pairInfo.data);
+          await saveData(pairInfo.data)
+            .then(() => {
+              // push to cronjobs array
+              const job = cron.schedule("*/5 * * * *", async () => {
+                await monitorPairMC(pairInfo.data);
+              });
+
+              cronjobs.push({ job: job, pairAddress: pairAdd });
+            })
+            .catch((err) => console.log(err));
           await sendToChannels(pairInfo.data);
         } else {
           console.log("Error fetching pair info:", pairInfo.message);
