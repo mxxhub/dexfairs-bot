@@ -11,38 +11,37 @@ export const sendToChannels = async (pairData: any) => {
         try {
           await bot.sendMessage(
             Number(targetChannels[i]),
-            `
-  🔗 Chain: ${pairData.chainId || "Ethereum"}
-  📊 DEX: ${pairData.dexId || "Uniswap"}
-  📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
-  
-  💠 Base Token:
-     • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
-     • Name: ${pairData.baseToken?.name || "N/A"}
-     • Symbol: ${pairData.baseToken?.symbol || "N/A"}
-  
-  💱 Quote Token:
-     • Address: <code>${pairData.quoteToken?.address || "N/A"}</code>
-     • Name: ${pairData.quoteToken?.name || "N/A"}
-     • Symbol: ${pairData.quoteToken?.symbol || "N/A"}
-  
-  💰 Price:
-     • Native: ${pairData.priceNative || "N/A"}
-     • USD: $${pairData.priceUsd || "N/A"}
-  
-  📈 Trading Info:
-     • Market Cap: $${pairData.marketCap || "N/A"}
-  
-  💧 Liquidity:
-     • USD: $${pairData.liquidity?.usd || "N/A"}
-     • Base: ${pairData.liquidity?.base || "N/A"} ${
+            `🔗 Chain: ${pairData.chainId || "Ethereum"}
+📊 DEX: ${pairData.dexId || "Uniswap"}
+📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
+
+💲 Base Token:
+    • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
+    • Name: ${pairData.baseToken?.name || "N/A"}
+    • Symbol: ${pairData.baseToken?.symbol || "N/A"}
+
+💲 Quote Token:
+    • Address: <code>${pairData.quoteToken?.address || "N/A"}</code>
+    • Name: ${pairData.quoteToken?.name || "N/A"}
+    • Symbol: ${pairData.quoteToken?.symbol || "N/A"}
+
+💰 Price:
+    • Native: ${pairData.priceNative || "N/A"}
+    • USD: $${pairData.priceUsd || "N/A"}
+
+📈 Trading Info:
+    • Market Cap: $${pairData.marketCap || "N/A"}
+
+💧 Liquidity:
+    • USD: $${pairData.liquidity?.usd || "N/A"}
+    • Base: ${pairData.liquidity?.base || "N/A"} ${
               pairData.baseToken?.symbol || ""
             }
-     • Quote: ${pairData.liquidity?.quote || "N/A"} ${
+    • Quote: ${pairData.liquidity?.quote || "N/A"} ${
               pairData.quoteToken?.symbol || ""
             }
-  
-  ⏰ Created: ${new Date(pairData.pairCreatedAt).toLocaleString()}`,
+
+⏰ Created: ${new Date(pairData.pairCreatedAt).toLocaleString()}`,
             {
               parse_mode: "HTML",
               disable_web_page_preview: true,
