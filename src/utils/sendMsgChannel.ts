@@ -4,7 +4,7 @@ import { getTargetChannels } from "./marketCapFilter";
 export const sendToChannels = async (pairData: any) => {
   try {
     const marketCap = Number(pairData?.marketCap);
-    const targetChannels = getTargetChannels(marketCap);
+    const targetChannels = getTargetChannels(marketCap, pairData.chainId);
 
     if (targetChannels.length > 0) {
       for (let i = 0; i < targetChannels.length; i++) {
@@ -14,6 +14,9 @@ export const sendToChannels = async (pairData: any) => {
             `🔗 Chain: ${pairData.chainId || "Ethereum"}
 📊 DEX: ${pairData.dexId || "Uniswap"}
 📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
+
+📈 Trading Info:
+    • Market Cap: $${pairData.marketCap || "N/A"}
 
 💲 Base Token:
     • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
@@ -28,9 +31,6 @@ export const sendToChannels = async (pairData: any) => {
 💰 Price:
     • Native: ${pairData.priceNative || "N/A"}
     • USD: $${pairData.priceUsd || "N/A"}
-
-📈 Trading Info:
-    • Market Cap: $${pairData.marketCap || "N/A"}
 
 💧 Liquidity:
     • USD: $${pairData.liquidity?.usd || "N/A"}

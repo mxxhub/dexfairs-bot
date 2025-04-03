@@ -28,7 +28,10 @@ export const startMarketCapMonitoring = async () => {
 };
 
 export const monitorPairMC = async (pairData: IPair) => {
-  const targetChannels = getTargetChannels(pairData.marketCap);
+  const targetChannels = getTargetChannels(
+    pairData.marketCap,
+    pairData.chainId
+  );
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
   const marketCapPercentage = Number(process.env.MARKET_CAP_PERCENTAGE) || 0.5;
 
