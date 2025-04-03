@@ -17,7 +17,7 @@ export const startMarketCapMonitoring = async () => {
     console.log("pairs", pairs);
     if (pairs && pairs.length > 0) {
       for (let i = 0; i < pairs.length; i++) {
-        const job = cron.schedule("*/1 * * * *", () => {
+        const job = cron.schedule("*/5 * * * *", () => {
           monitorPairMC(pairs[i] as IPair);
         });
         cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
