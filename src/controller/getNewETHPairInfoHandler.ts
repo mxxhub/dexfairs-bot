@@ -1,11 +1,14 @@
 import cron from "node-cron";
 import { EventEmitter } from "events";
-import { baseEventEmitter, ETHEventEmitter } from "../utils/getNewBasePair";
+import {
+  baseEventEmitter,
+  ETHEventEmitter,
+  BSCEventEmitter,
+} from "../utils/getNewPair";
 import { getPairInfo } from "../utils/getPairInfo";
 import { sendToChannels } from "../utils/sendMsgChannel";
 import { saveData } from "../db/contoller/saveData";
 import { cronjobs, monitorPairMC } from "./marketCapCron";
-import { getNew } from "../utils/getNewBasePair";
 
 const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
   try {
@@ -49,6 +52,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 };
 
 export const getNewPairInfoHandler = () => {
-  monitorPair(baseEventEmitter, "base");
-  monitorPair(ETHEventEmitter, "ethereum");
+  // monitorPair(ETHEventEmitter, "ethereum");
+  // monitorPair(baseEventEmitter, "base");
+  monitorPair(BSCEventEmitter, "BSC");
 };

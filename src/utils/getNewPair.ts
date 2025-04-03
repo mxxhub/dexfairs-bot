@@ -4,6 +4,10 @@ import { EventEmitter } from "events";
 
 dotenv.config();
 
+let baseEventEmitter: EventEmitter = new EventEmitter();
+let ETHEventEmitter: EventEmitter = new EventEmitter();
+let BSCEventEmitter: EventEmitter = new EventEmitter();
+
 const getNewPair = (
   network: string,
   projectId: string,
@@ -25,6 +29,10 @@ const getNewPair = (
       } else if (network === "base") {
         return new ethers.WebSocketProvider(
           `wss://base-mainnet.g.alchemy.com/v2/${projectId}`
+        );
+      } else if (network === "BSC") {
+        return new ethers.WebSocketProvider(
+          `wss://fabled-tiniest-darkness.bsc.quiknode.pro/${projectId}`
         );
       } else {
         console.log(`Unsupported network: ${network}`);
@@ -69,4 +77,27 @@ const getNewPair = (
   }
 };
 
-export { getNewPair };
+export const getNew = async () => {
+  const baseProjectId = process.env.ALCHEMY_API_KEY || "";
+  const baseFactoryAddress = process.env.BASE_FACTORY_ADDRESS || "";
+  const ETHProjectId = process.env.INFURA_PROJECT_ID || "";
+  const ETHFactoryAddress = process.env.FACTORY_ADDRESS || "";
+  const BSCFactoryAddress = process.env.BSC_FACTORY_ADDRESS || "";
+  const BSCProjectId = process.env.BSC_API_KEY || "";
+
+  // Ensure that baseEventEmitter always has a valid EventEmitter
+  baseEventEmitter =
+    (await getNewPair("base", baseProjectId, baseFactoryAddress)) ||
+    new EventEmitter();
+  ETHEventEmitter =
+    (await getNewPair("ETH", ETHProjectId, ETHFactoryAddress)) ||
+    new EventEmitter();
+  BSCEventEmitter =
+    (await getNewPair("BSC", BSCProjectId, BSCFactoryAddress)) ||
+    new EventEmitter();
+};
+
+// Call `getNew()` immediately when this file is imported
+getNew();
+
+export { baseEventEmitter, ETHEventEmitter, BSCEventEmitter };
