@@ -20,11 +20,11 @@ const getNewPair = (
     ];
 
     const createProvider = () => {
-      if (network === "mainnet") {
+      if (network === "ETH") {
         return new ethers.InfuraWebSocketProvider("mainnet", projectId);
-      } else if (network === "base-mainnet") {
+      } else if (network === "base") {
         return new ethers.WebSocketProvider(
-          `https://soft-thrilling-aura.base-mainnet.quiknode.pro/${projectId}`
+          `wss://base-mainnet.g.alchemy.com/v2/${projectId}`
         );
       } else {
         console.log(`Unsupported network: ${network}`);
@@ -39,7 +39,7 @@ const getNewPair = (
           factoryContract.removeAllListeners("PairCreated");
         }
 
-        console.log("Restarted ETH provider connection");
+        console.log(`Restarted ${network} provider connection`);
 
         factoryContract = new ethers.Contract(
           factoryAddress,
