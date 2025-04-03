@@ -24,7 +24,7 @@ const MARKET_CAP_RANGES: MarketCapRange[] = [
       { network: "base", channelId: process.env.BASE_CHANNEL_1 || "" },
       { network: "bsc", channelId: process.env.BSC_CHANNEL_1 || "" },
     ],
-  }, // >200
+  },
   {
     min: MARKET_CAP_MEDIUM,
     network: [
@@ -32,7 +32,7 @@ const MARKET_CAP_RANGES: MarketCapRange[] = [
       { network: "base", channelId: process.env.BASE_CHANNEL_2 || "" },
       { network: "bsc", channelId: process.env.BSC_CHANNEL_2 || "" },
     ],
-  }, // >500
+  },
   {
     min: MARKET_CAP_HIGH,
     network: [
@@ -40,7 +40,7 @@ const MARKET_CAP_RANGES: MarketCapRange[] = [
       { network: "base", channelId: process.env.BASE_CHANNEL_3 || "" },
       { network: "bsc", channelId: process.env.BSC_CHANNEL_3 || "" },
     ],
-  }, // >1000
+  },
 ];
 
 export const getTargetChannels = (
@@ -62,5 +62,9 @@ export const getTargetChannels = (
       }
     }
   }
+
+  // filteredChannels.map((fc: MarketCapRange) =>
+  //   channels.push(fc.channelId.toString())
+  // );
   return channels;
 };
