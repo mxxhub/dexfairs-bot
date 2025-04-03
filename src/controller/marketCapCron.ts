@@ -14,7 +14,6 @@ export const startMarketCapMonitoring = async () => {
   try {
     console.log("Monitoring MarketCap");
     const pairs = await getPairDataFromDB();
-    console.log("pairs", pairs);
     if (pairs && pairs.length > 0) {
       for (let i = 0; i < pairs.length; i++) {
         const job = cron.schedule("*/5 * * * *", () => {
@@ -33,7 +32,6 @@ export const monitorPairMC = async (pairData: IPair) => {
     pairData.marketCap,
     pairData.chainId
   );
-  console.log("targetChannels", targetChannels);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
   const marketCapPercentage = Number(process.env.MARKET_CAP_PERCENTAGE) || 0.5;
 
