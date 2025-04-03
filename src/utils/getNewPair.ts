@@ -24,13 +24,13 @@ const getNewPair = (
     ];
 
     const createProvider = () => {
-      if (network === "ETH") {
+      if (network === "ethereum") {
         return new ethers.InfuraWebSocketProvider("mainnet", projectId);
       } else if (network === "base") {
         return new ethers.WebSocketProvider(
           `wss://base-mainnet.g.alchemy.com/v2/${projectId}`
         );
-      } else if (network === "BSC") {
+      } else if (network === "bsc") {
         return new ethers.WebSocketProvider(
           `wss://fabled-tiniest-darkness.bsc.quiknode.pro/${projectId}`
         );
@@ -99,10 +99,10 @@ export const getNew = async () => {
     (await getNewPair("base", baseProjectId, baseFactoryAddress)) ||
     new EventEmitter();
   ETHEventEmitter =
-    (await getNewPair("ETH", ETHProjectId, ETHFactoryAddress)) ||
+    (await getNewPair("ethereum", ETHProjectId, ETHFactoryAddress)) ||
     new EventEmitter();
   BSCEventEmitter =
-    (await getNewPair("BSC", BSCProjectId, BSCFactoryAddress)) ||
+    (await getNewPair("bsc", BSCProjectId, BSCFactoryAddress)) ||
     new EventEmitter();
 };
 

@@ -52,5 +52,5 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 export const getNewPairInfoHandler = () => {
   monitorPair(ETHEventEmitter, "ethereum");
   monitorPair(baseEventEmitter, "base");
-  monitorPair(BSCEventEmitter, "BSC");
+  monitorPair(BSCEventEmitter, "bsc");
 };
