@@ -1,48 +1,67 @@
 import { ethers } from "ethers";
-import { EventEmitter } from "events";
 import dotenv from "dotenv";
+import { EventEmitter } from "events";
 
 dotenv.config();
 
-const baseEventEmitter = new EventEmitter();
+// Use Alchemy, Ankr, QuickNode, or another WebSocket provider
+const baseRpcUrl =
+  process.env.BASE_RPC_URL ||
+  "wss://base-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY";
 
-// Use Alchemy WebSocket if possible
-const BASE_WSS_URL = process.env.BASE_WSS_URL || "wss://mainnet.base.org";
-const provider = new ethers.WebSocketProvider(BASE_WSS_URL);
+const uniswapFactoryAddress =
+  process.env.BASE_FACTORY_ADDRESS ||
+  "0x4f4ebf7f1d19f2cdbfd3c4c5c9f1ef96bd86c8a0"; // Uniswap V2 Factory on Base
 
-const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS || "";
-const FACTORY_ABI = [
-  "event PairCreated(address indexed token0, address indexed token1, address pair, uint256)",
+let factoryContract: ethers.Contract;
+const eventEmitter = new EventEmitter();
+
+const factoryABI = [
+  "event PairCreated(address indexed token0, address indexed token1, address pair, uint)",
 ];
 
-const factoryContract = new ethers.Contract(
-  FACTORY_ADDRESS,
-  FACTORY_ABI,
-  provider
-);
+const createProvider = () => {
+  return new ethers.WebSocketProvider(baseRpcUrl);
+};
 
-export const getNewBasePair = async () => {
-  console.log("Listening for new pairs on Base...");
+let provider = createProvider();
 
-  factoryContract.on("PairCreated", (token0, token1, pair) => {
-    console.log("New Base Pair Detected!");
-    console.log("Token0:", token0);
-    console.log("Token1:", token1);
-    console.log("Pair:", pair);
+const getNewBasePair = () => {
+  try {
+    if (factoryContract) {
+      factoryContract.removeAllListeners("PairCreated");
+    }
 
-    baseEventEmitter.emit("newBasePair", { token0, token1, pair });
-  });
+    console.log("Restarted Base provider connection");
 
-  provider._websocket.on("error", (err) => {
-    console.error("WebSocket error:", err);
-  });
+    factoryContract = new ethers.Contract(
+      uniswapFactoryAddress,
+      factoryABI,
+      provider
+    );
 
-  provider._websocket.on("close", () => {
-    console.warn("WebSocket closed! Reconnecting...");
-    setTimeout(getNewBasePair, 5000);
-  });
+    factoryContract.on(
+      "PairCreated",
+      async (token0: string, token1: string, pair: string) => {
+        console.log(
+          "New pair on Base - token0:",
+          token0,
+          "token1:",
+          token1,
+          "pair:",
+          pair
+        );
+        eventEmitter.emit("newPair", { token0, token1, pair });
+      }
+    );
+  } catch (err) {
+    console.log("Error getting new Base pair", err);
+  }
 };
 
 getNewBasePair();
 
-export { baseEventEmitter };
+// Restart connection every 10 minutes
+setInterval(getNewBasePair, 10 * 60 * 1000);
+
+export { eventEmitter };
