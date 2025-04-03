@@ -14,6 +14,7 @@ export const startMarketCapMonitoring = async () => {
   try {
     console.log("Monitoring MarketCap");
     const pairs = await getPairDataFromDB();
+    console.log("pairs", pairs);
     if (pairs && pairs.length > 0) {
       for (let i = 0; i < pairs.length; i++) {
         const job = cron.schedule("*/1 * * * *", () => {
@@ -33,6 +34,7 @@ export const monitorPairMC = async (pairData: IPair) => {
     pairData.chainId
   );
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
+  console.log("pairInfo", pairInfo);
   const marketCapPercentage = Number(process.env.MARKET_CAP_PERCENTAGE) || 0.5;
 
   if (pairInfo?.success) {
@@ -45,6 +47,7 @@ export const monitorPairMC = async (pairData: IPair) => {
       !isNaN(currentMarketCap) &&
       currentMarketCap < pairData.marketCap * marketCapPercentage
     ) {
+      console.log("market cap is less than 50% of the pair's market cap");
       const alertMessage = `
 🚨 All Time Low!
 
