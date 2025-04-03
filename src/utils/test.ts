@@ -35,7 +35,7 @@ const getNewBscPair = () => {
     console.log("Listening for new pairs on BSC...");
 
     factoryContract.on("PairCreated", async (token0, token1, pair) => {
-      console.log("New Pair Created!");
+      console.log("New Pair Created on BSC!");
       console.log("Token0:", token0);
       console.log("Token1:", token1);
       console.log("Pair Address:", pair);

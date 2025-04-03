@@ -58,7 +58,16 @@ const getNewPair = (
         factoryContract.on(
           "PairCreated",
           async (token0: string, token1: string, pair: string) => {
-            console.log("token0:", token0, "token1:", token1, "pair:", pair);
+            console.log(
+              "New Pair Created on",
+              network,
+              "token0:",
+              token0,
+              "token1:",
+              token1,
+              "pair:",
+              pair
+            );
             eventEmitter.emit("newPair", { token0, token1, pair });
           }
         );

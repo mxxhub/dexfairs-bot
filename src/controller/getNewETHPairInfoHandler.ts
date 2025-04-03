@@ -15,10 +15,8 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
     eventEmitter.on("newPair", async ({ token0, token1, pair }) => {
       try {
         const pairAdd = pair.toString();
-        console.log("Received new pair:");
-        console.log("token0:", token0);
-        console.log("token1:", token1);
-        console.log("pair:", pair);
+        console.log(`Received new pair on ${network}:`);
+        console.log("token0:", token0, "token1:", token1, "pair:", pair);
 
         setTimeout(async () => {
           const pairInfo = await getPairInfo(network, pairAdd);
@@ -52,7 +50,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 };
 
 export const getNewPairInfoHandler = () => {
-  // monitorPair(ETHEventEmitter, "ethereum");
-  // monitorPair(baseEventEmitter, "base");
+  monitorPair(ETHEventEmitter, "ethereum");
+  monitorPair(baseEventEmitter, "base");
   monitorPair(BSCEventEmitter, "BSC");
 };
