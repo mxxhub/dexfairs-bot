@@ -43,6 +43,12 @@ const MARKET_CAP_RANGES: MarketCapRange[] = [
   },
 ];
 
+const channelsForAlert = [
+  { chainId: "ethereum", channel: process.env.ETH_ALERT_CHANNEL || "" },
+  { chainId: "base", channel: process.env.BASE_ALERT_CHANNEL || "" },
+  { chainId: "bsc", channel: process.env.BSC_ALERT_CHANNEL || "" },
+];
+
 export const getTargetChannels = (
   marketCap: number,
   network: string
@@ -67,4 +73,12 @@ export const getTargetChannels = (
   //   channels.push(fc.channelId.toString())
   // );
   return channels;
+};
+
+export const getChannelsforAlert = (chainId: string) => {
+  for (let i = 0; i < channelsForAlert.length; i++) {
+    if (chainId === channelsForAlert[i].chainId) {
+      return channelsForAlert[i].channel;
+    }
+  }
 };
