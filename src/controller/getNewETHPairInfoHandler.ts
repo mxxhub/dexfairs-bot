@@ -20,7 +20,6 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 
         setTimeout(async () => {
           const pairInfo = await getPairInfo(network, pairAdd);
-          console.log(pairInfo);
           if (pairInfo && pairInfo.success) {
             await sendToChannels(pairInfo.data)
               .then(async () => {
