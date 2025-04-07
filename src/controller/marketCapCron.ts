@@ -54,10 +54,10 @@ export const monitorPairMC = async (pairData: IPair) => {
           const alertMessage = `
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 
+Chain: ${pairData.chainId}
 Pair Address: <code>${pairData.pairAddress}</code>
 First Market Cap: $${pairData.marketCap}
 Current Market Cap: $${currentMarketCap}
-Chain: ${pairData.chainId}
 
 ⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
 `;
