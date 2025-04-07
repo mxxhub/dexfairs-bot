@@ -32,7 +32,8 @@ export const startMarketCapMonitoring = async () => {
 };
 
 export const monitorPairMC = async (pairData: IPair) => {
-  const targetChannel = getChannelsforAlert(pairData.chainId);
+  const marketCap = Number(pairData?.marketCap);
+  const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
   console.log("pairInfo", pairInfo);
   const marketCapPercentage = 1 - Number(process.env.MARKET_CAP_PERCENTAGE);
@@ -47,8 +48,10 @@ export const monitorPairMC = async (pairData: IPair) => {
       !isNaN(currentMarketCap) &&
       currentMarketCap < pairData.marketCap * marketCapPercentage
     ) {
-      console.log("market cap is less than 50% of the pair's market cap");
-      const alertMessage = `
+      if (targetChannel.length > 0) {
+        for (let i = 0; i < targetChannel.length; i++) {
+          console.log("market cap is less than 50% of the pair's market cap");
+          const alertMessage = `
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 
 Pair Address: <code>${pairData.pairAddress}</code>
@@ -59,17 +62,19 @@ Chain: ${pairData.chainId}
 ⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
 `;
 
-      try {
-        await bot.sendMessage(Number(targetChannel), alertMessage, {
-          parse_mode: "HTML",
-          disable_web_page_preview: true,
-        });
-        console.log(`Alert sent to channel ${targetChannel}`);
-      } catch (error) {
-        console.error(
-          `Error sending alert to channel ${Number(targetChannel)}:`,
-          error
-        );
+          try {
+            await bot.sendMessage(targetChannel[i], alertMessage, {
+              parse_mode: "HTML",
+              disable_web_page_preview: true,
+            });
+            console.log(`Alert sent to channel ${targetChannel[i]}`);
+          } catch (error) {
+            console.error(
+              `Error sending alert to channel ${targetChannel[i]}:`,
+              error
+            );
+          }
+        }
       }
 
       await deletePairData(pairData.pairAddress);

@@ -43,13 +43,13 @@ const MARKET_CAP_RANGES: MarketCapRange[] = [
   },
 ];
 
-const channelsForAlert = [
-  { chainId: "ethereum", channel: process.env.ETH_ALERT_CHANNEL || "" },
-  { chainId: "base", channel: process.env.BASE_ALERT_CHANNEL || "" },
-  { chainId: "bsc", channel: process.env.BSC_ALERT_CHANNEL || "" },
+const channelsForNewPairs = [
+  { chainId: "ethereum", channel: process.env.ETH_NEW_PAIR_CHANNEL || "" },
+  { chainId: "base", channel: process.env.BASE_NEW_PAIR_CHANNEL || "" },
+  { chainId: "bsc", channel: process.env.BSC_NEW_PAIR_CHANNEL || "" },
 ];
 
-export const getTargetChannels = (
+export const getChannelsforAlert = (
   marketCap: number,
   network: string
 ): string[] => {
@@ -75,10 +75,18 @@ export const getTargetChannels = (
   return channels;
 };
 
-export const getChannelsforAlert = (chainId: string) => {
-  for (let i = 0; i < channelsForAlert.length; i++) {
-    if (chainId === channelsForAlert[i].chainId) {
-      return channelsForAlert[i].channel;
+export const getTargetChannels = (network: string) => {
+  for (let i = 0; i < channelsForNewPairs.length; i++) {
+    if (channelsForNewPairs[i].chainId == network) {
+      return channelsForNewPairs[i].channel;
     }
   }
 };
+
+// export const getChannelsforAlert = (chainId: string) => {
+//   for (let i = 0; i < channelsForAlert.length; i++) {
+//     if (chainId === channelsForAlert[i].chainId) {
+//       return channelsForAlert[i].channel;
+//     }
+//   }
+// };
