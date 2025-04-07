@@ -39,7 +39,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           } else {
             console.log("Error fetching pair info:", pairInfo?.message);
           }
-        }, 2 * 60 * 1000); // 2 mins delay
+        }, 5 * 60 * 1000); // 2 mins delay
       } catch (err) {
         console.error("Error fetching pair info:", err);
       }
