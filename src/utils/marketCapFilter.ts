@@ -75,9 +75,9 @@ export const getChannelsforAlert = (
   return channels;
 };
 
-export const getTargetChannels = (network: string) => {
+export const getTargetChannels = (chainId: string) => {
   for (let i = 0; i < channelsForNewPairs.length; i++) {
-    if (channelsForNewPairs[i].chainId == network) {
+    if (chainId === channelsForNewPairs[i].chainId) {
       return channelsForNewPairs[i].channel;
     }
   }
