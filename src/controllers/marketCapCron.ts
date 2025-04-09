@@ -52,6 +52,7 @@ export const startMarketCapMonitoring = async () => {
 export const monitorPairMC = async (pairData: IPair) => {
   let updatedMarketCap;
   let flag: boolean = true;
+  console.log("flag: ", flag);
   const marketCap = Number(pairData?.marketCap);
   const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
@@ -73,7 +74,7 @@ Pair Address: <code>${pairData.pairAddress}</code>
 First Market Cap: $${pairData.marketCap}
 Current Market Cap: $${updatedMarketCap}
 
-⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
+⚠️ Market cap has increased ⚠️
 `;
 
       try {

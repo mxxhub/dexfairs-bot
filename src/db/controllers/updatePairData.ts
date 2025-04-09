@@ -1,9 +1,6 @@
 import { Pair } from "../model/model";
 
-export const updatePair = async (
-  pairAdd: string,
-  updatedMarketCap: number
-): Promise<number | undefined> => {
+export const updatePair = async (pairAdd: string, updatedMarketCap: number) => {
   try {
     const result = await Pair.updateOne(
       { pairAddress: pairAdd },
