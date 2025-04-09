@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { getDataSevenAgo } from "../db/contoller/getDataBefore";
+import { getDataFourAgo } from "../db/contoller/getDataBefore";
 import { deletePairData } from "../db/contoller/deletePairData";
 import { cronjobs } from "./marketCapCron";
 
@@ -7,7 +7,7 @@ export const deleteDaily = () => {
   try {
     console.log("deleted daily");
     cron.schedule("0 0 * * *", async () => {
-      const dataBeforeWeek = await getDataSevenAgo();
+      const dataBeforeWeek = await getDataFourAgo();
       if (!dataBeforeWeek || dataBeforeWeek.length === 0) {
         console.log("No data found to process");
         return;

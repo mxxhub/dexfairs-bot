@@ -1,9 +1,9 @@
 import { Pair } from "../model/model";
 const sevenDayAgo = new Date();
 
-sevenDayAgo.setDate(sevenDayAgo.getDate() - 7);
+sevenDayAgo.setDate(sevenDayAgo.getDate() - 4);
 
-export const getDataSevenAgo = async () => {
+export const getDataFourAgo = async () => {
   try {
     const result = await Pair.find({ createdAt: { $lt: sevenDayAgo } });
     if (!result || result.length === 0) {
