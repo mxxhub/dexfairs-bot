@@ -3,7 +3,10 @@ import dotenv from "dotenv";
 import { getPairDataFromDB } from "../db/controllers/getData";
 import { getPairInfo } from "../utils/getPairInfo";
 import { bot } from "../bot/index";
-import { getChannelsforAlert } from "../utils/marketCapFilter";
+import {
+  getChannelsforAlert,
+  getTargetChannels,
+} from "../utils/marketCapFilter";
 import { deletePairData } from "../db/controllers/deletePairData";
 import { IPair } from "../@types/global";
 import { updatePair } from "../db/controllers/updatePairData";
@@ -61,6 +64,31 @@ export const monitorPairMC = async (pairData: IPair) => {
         pairInfo.data.pairAddress,
         pairInfo.data.marketCap
       );
+
+      const alertMessage = `
+🚨🚨🚨 All Time High! 🚨🚨🚨
+
+Chain: ${pairData.chainId}
+Pair Address: <code>${pairData.pairAddress}</code>
+First Market Cap: $${pairData.marketCap}
+Current Market Cap: $${updatedMarketCap}
+
+⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
+`;
+
+      try {
+        const targetChannel = getTargetChannels(pairData.chainId);
+        await bot.sendMessage(Number(targetChannel), alertMessage, {
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+        });
+        console.log(`Alert sent to channel ${targetChannel}`);
+      } catch (error) {
+        console.error(
+          `Error sending all time high alert to channel ${targetChannel}:`,
+          error
+        );
+      }
       flag = true;
     }
     console.log("succeed in getting pair info");
