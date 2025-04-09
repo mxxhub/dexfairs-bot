@@ -74,7 +74,7 @@ Pair Address: <code>${pairData.pairAddress}</code>
 First Market Cap: $${pairData.marketCap}
 Current Market Cap: $${updatedMarketCap}
 
-⚠️ Market cap has increased ⚠️
+ℹ️ Market cap has increased ℹ️
 `;
 
       try {
