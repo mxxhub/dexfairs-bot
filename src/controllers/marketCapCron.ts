@@ -3,12 +3,10 @@ import dotenv from "dotenv";
 import { getPairDataFromDB } from "../db/controllers/getData";
 import { getPairInfo } from "../utils/getPairInfo";
 import { bot } from "../bot/index";
-import {
-  getChannelsforAlert,
-  getTargetChannels,
-} from "../utils/marketCapFilter";
+import { getChannelsforAlert } from "../utils/marketCapFilter";
 import { deletePairData } from "../db/controllers/deletePairData";
 import { IPair } from "../@types/global";
+import { updatePair } from "../db/controllers/updatePairData";
 
 dotenv.config();
 
@@ -32,6 +30,8 @@ export const startMarketCapMonitoring = async () => {
 };
 
 export const monitorPairMC = async (pairData: IPair) => {
+  let updatedMarketCap;
+  let flag: boolean = false;
   const marketCap = Number(pairData?.marketCap);
   const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
@@ -39,14 +39,22 @@ export const monitorPairMC = async (pairData: IPair) => {
   const marketCapPercentage = 1 - Number(process.env.MARKET_CAP_PERCENTAGE);
 
   if (pairInfo?.success) {
+    if (marketCap < pairInfo?.data.marketCap) {
+      updatedMarketCap = updatePair(
+        pairInfo.data.pairAddress,
+        pairInfo.data.marketCap
+      );
+      flag = true;
+    }
     console.log("succeed in getting pair info");
     const currentMarketCap = Number(pairInfo.data?.marketCap);
     console.log("currentMarketCap", currentMarketCap);
 
     // Check if market cap is less than 50% of the pair's market cap
     if (
+      flag &&
       !isNaN(currentMarketCap) &&
-      currentMarketCap < pairData.marketCap * marketCapPercentage
+      currentMarketCap < Number(updatedMarketCap) * marketCapPercentage
     ) {
       if (targetChannel.length > 0) {
         for (let i = 0; i < targetChannel.length; i++) {
@@ -86,6 +94,7 @@ Current Market Cap: $${currentMarketCap}
           console.log("cronjob is stopped");
         }
       }
+      flag = false;
     }
   }
 };
