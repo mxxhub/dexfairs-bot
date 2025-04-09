@@ -1,6 +1,6 @@
 import { getNewPairInfoHandler } from "./getNewETHPairInfoHandler";
 import { startMarketCapMonitoring } from "./marketCapCron";
-import { deleteDaily } from "../controller/deleteweekly";
+import { deleteDaily } from "./deleteweekly";
 
 export const initAll = async () => {
   try {

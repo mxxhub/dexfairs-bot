@@ -1,6 +1,6 @@
 import cron from "node-cron";
-import { getDataFourAgo } from "../db/contoller/getDataBefore";
-import { deletePairData } from "../db/contoller/deletePairData";
+import { getDataFourAgo } from "../db/controllers/getDataBefore";
+import { deletePairData } from "../db/controllers/deletePairData";
 import { cronjobs } from "./marketCapCron";
 
 export const deleteDaily = () => {

@@ -7,7 +7,7 @@ import {
 } from "../utils/getNewPair";
 import { getPairInfo } from "../utils/getPairInfo";
 import { sendToChannels } from "../utils/sendMsgChannel";
-import { saveData } from "../db/contoller/saveData";
+import { saveData } from "../db/controllers/saveData";
 import { cronjobs, monitorPairMC } from "./marketCapCron";
 
 const monitorPair = async (eventEmitter: EventEmitter, network: string) => {

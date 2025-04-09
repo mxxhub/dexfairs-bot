@@ -1,13 +1,13 @@
 import cron from "node-cron";
 import dotenv from "dotenv";
-import { getPairDataFromDB } from "../db/contoller/getData";
+import { getPairDataFromDB } from "../db/controllers/getData";
 import { getPairInfo } from "../utils/getPairInfo";
 import { bot } from "../bot/index";
 import {
   getChannelsforAlert,
   getTargetChannels,
 } from "../utils/marketCapFilter";
-import { deletePairData } from "../db/contoller/deletePairData";
+import { deletePairData } from "../db/controllers/deletePairData";
 import { IPair } from "../@types/global";
 
 dotenv.config();
@@ -92,11 +92,11 @@ Current Market Cap: $${currentMarketCap}
 
 // import cron from "node-cron";
 // import dotenv from "dotenv";
-// import { getPairDataFromDB } from "../db/contoller/getData";
+// import { getPairDataFromDB } from "../db/controllers/getData";
 // import { getPairInfo } from "../utils/getPairInfo";
 // import { bot } from "../bot/index";
 // import { getTargetChannels } from "../utils/marketCapFilter";
-// import { deletePairData } from "../db/contoller/deletePairData";
+// import { deletePairData } from "../db/controllers/deletePairData";
 // import { IPair } from "../@types/global";
 
 // dotenv.config();
