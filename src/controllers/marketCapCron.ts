@@ -11,19 +11,36 @@ import { updatePair } from "../db/controllers/updatePairData";
 dotenv.config();
 
 export let cronjobs: { job: cron.ScheduledTask; pairAddress: string }[] = [];
+// export const startMarketCapMonitoring = async () => {
+//   try {
+//     console.log("Monitoring MarketCap");
+//     const pairs = await getPairDataFromDB();
+//     console.log("pairs", pairs);
+//     if (pairs && pairs.length > 0) {
+//       for (let i = 0; i < pairs.length; i++) {
+//         const job = cron.schedule("*/5 * * * *", () => {
+//           monitorPairMC(pairs[i] as IPair);
+//         });
+//         cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
+//       }
+//     }
+//   } catch (err) {
+//     console.log("Error in startMarketCapMonitoring:", err);
+//   }
+// };
+
 export const startMarketCapMonitoring = async () => {
   try {
     console.log("Monitoring MarketCap");
-    const pairs = await getPairDataFromDB();
-    console.log("pairs", pairs);
-    if (pairs && pairs.length > 0) {
-      for (let i = 0; i < pairs.length; i++) {
-        const job = cron.schedule("*/5 * * * *", () => {
+    const job = cron.schedule("*/5 * * * *", async () => {
+      const pairs = await getPairDataFromDB();
+      if (pairs && pairs.length > 0) {
+        for (let i = 0; i < pairs.length; i++) {
           monitorPairMC(pairs[i] as IPair);
-        });
-        cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
+          cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
+        }
       }
-    }
+    });
   } catch (err) {
     console.log("Error in startMarketCapMonitoring:", err);
   }
@@ -31,7 +48,7 @@ export const startMarketCapMonitoring = async () => {
 
 export const monitorPairMC = async (pairData: IPair) => {
   let updatedMarketCap;
-  let flag: boolean = false;
+  let flag: boolean = true;
   const marketCap = Number(pairData?.marketCap);
   const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
@@ -85,15 +102,15 @@ Current Market Cap: $${currentMarketCap}
         }
       }
 
-      await deletePairData(pairData.pairAddress);
+      // await deletePairData(pairData.pairAddress);
 
-      for (let j = 0; j < cronjobs.length; j++) {
-        const cronjob = cronjobs[j];
-        if (cronjob.pairAddress === pairData.pairAddress) {
-          cronjob.job.stop();
-          console.log("cronjob is stopped");
-        }
-      }
+      // for (let j = 0; j < cronjobs.length; j++) {
+      //   const cronjob = cronjobs[j];
+      //   if (cronjob.pairAddress === pairData.pairAddress) {
+      //     cronjob.job.stop();
+      //     console.log("cronjob is stopped");
+      //   }
+      // }
       flag = false;
     }
   }
