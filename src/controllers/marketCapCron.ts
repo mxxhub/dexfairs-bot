@@ -34,7 +34,6 @@ export const startMarketCapMonitoring = async () => {
 export const monitorPairMC = async (pairData: IPair) => {
   let updatedMarketCap: number = 0;
   let flag: boolean = true;
-  console.log("flag: ", flag);
   const marketCap = Number(pairData?.marketCap);
   const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
@@ -122,6 +121,7 @@ Current Market Cap: $${currentMarketCap}
       // }
     }
   }
+  console.log("flag: ", flag);
 };
 
 // import cron from "node-cron";
