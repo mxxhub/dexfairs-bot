@@ -9,6 +9,7 @@ import {
 } from "../utils/marketCapFilter";
 import { IPair } from "../@types/global";
 import { updatePair } from "../db/controllers/updatePairData";
+import { updateFlag } from "../db/controllers/updateFlag";
 
 dotenv.config();
 
@@ -32,12 +33,10 @@ export const startMarketCapMonitoring = async () => {
 };
 
 export const monitorPairMC = async (pairData: IPair) => {
-  let updatedMarketCap: number = 0;
-  let flag: boolean = true;
+  const flag = pairData?.flag;
   const marketCap = Number(pairData?.marketCap);
   const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
-  console.log("pairInfo", pairInfo);
   const marketCapPercentage = 1 - Number(process.env.MARKET_CAP_PERCENTAGE);
 
   if (pairInfo?.success) {
@@ -61,7 +60,7 @@ Current MarketCap: ${pairInfo?.data.marketCap}
           parse_mode: "HTML",
           disable_web_page_preview: true,
         });
-        flag = true;
+        await updateFlag(pairData.pairAddress, true);
         console.log(`Alert sent to channel ${targetChannel}`);
       } catch (error) {
         console.error(
@@ -102,7 +101,7 @@ Current MarketCap: $${currentMarketCap}
               disable_web_page_preview: true,
             });
 
-            flag = false;
+            await updateFlag(pairData.pairAddress, false);
             console.log(`Alert sent to channel ${targetChannel[i]}`);
           } catch (error) {
             console.error(

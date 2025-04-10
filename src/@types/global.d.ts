@@ -3,4 +3,5 @@ export interface IPair {
   pairAddress: string;
   marketCap: number;
   createdAt: Date;
+  flag: boolean;
 }
