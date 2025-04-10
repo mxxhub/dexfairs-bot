@@ -49,8 +49,8 @@ export const monitorPairMC = async (pairData: IPair) => {
 
 Chain: ${pairData.chainId}
 Pair Address: <code>${pairData.pairAddress}</code>
-First Market Cap: ${marketCap}
-Current Market Cap: ${pairInfo?.data.marketCap}
+Previous MarketCap: ${marketCap}
+Current MarketCap: ${pairInfo?.data.marketCap}
 
 ℹ️ Market cap has increased ℹ️
 `;
@@ -61,6 +61,7 @@ Current Market Cap: ${pairInfo?.data.marketCap}
           parse_mode: "HTML",
           disable_web_page_preview: true,
         });
+        flag = true;
         console.log(`Alert sent to channel ${targetChannel}`);
       } catch (error) {
         console.error(
@@ -68,7 +69,6 @@ Current Market Cap: ${pairInfo?.data.marketCap}
           error
         );
       }
-      flag = true;
     }
 
     console.log("succeed in getting pair info");
@@ -88,8 +88,8 @@ Current Market Cap: ${pairInfo?.data.marketCap}
 
 Chain: ${pairData.chainId}
 Pair Address: <code>${pairData.pairAddress}</code>
-First Market Cap: $${pairData.marketCap}
-Current Market Cap: $${currentMarketCap}
+Previous MarketCap: $${pairData.marketCap}
+Current MarketCap: $${currentMarketCap}
 
 ⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
 `;
@@ -99,6 +99,8 @@ Current Market Cap: $${currentMarketCap}
               parse_mode: "HTML",
               disable_web_page_preview: true,
             });
+
+            flag = false;
             console.log(`Alert sent to channel ${targetChannel[i]}`);
           } catch (error) {
             console.error(
@@ -108,7 +110,6 @@ Current Market Cap: $${currentMarketCap}
           }
         }
       }
-      flag = false;
 
       // await deletePairData(pairData.pairAddress);
 
@@ -177,8 +178,8 @@ Current Market Cap: $${currentMarketCap}
 //   🚨 All Time Low!
 
 //   Pair Address: <code>${pairData.pairAddress}</code>
-//   First Market Cap: $${pairData.marketCap}
-//   Current Market Cap: $${currentMarketCap}
+//   Previous MarketCap: $${pairData.marketCap}
+//   Current MarketCap: $${currentMarketCap}
 //   Chain: ${pairData.chainId}
 
 //   ⚠️ Market cap has fallen below ${marketCapPercentage * 100}%
