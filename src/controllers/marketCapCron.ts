@@ -46,10 +46,10 @@ export const monitorPairMC = async (pairData: IPair) => {
       const allTimeHighAlertMessage = `
 🚨🚨🚨 All Time High! 🚨🚨🚨
 
-Chain: ${pairData.chainId}
-Pair Address: <code>${pairData.pairAddress}</code>
-Previous MarketCap: ${marketCap}
-Current MarketCap: ${pairInfo?.data.marketCap}
+🔗 Chain: ${pairData.chainId}
+📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${pairData.pairAddress}">$${pairInfo?.data?.baseToken?.symbol} / ${pairInfo?.data?.quoteToken?.symbol}</a>
+👉 Previous MarketCap: ${marketCap}
+👆 Current MarketCap: ${pairInfo?.data.marketCap}
 
 ℹ️ Market cap has increased ℹ️
 `;
@@ -87,10 +87,14 @@ Current MarketCap: ${pairInfo?.data.marketCap}
           const allTimeLowAlertMessage = `
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 
-Chain: ${pairData.chainId}
-Pair Address: <code>${pairData.pairAddress}</code>
-Previous MarketCap: $${pairData.marketCap}
-Current MarketCap: $${currentMarketCap}
+🔗 Chain: ${pairData.chainId}
+📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${
+            pairData.pairAddress
+          }">$${pairInfo?.data?.baseToken?.symbol} / ${
+            pairInfo?.data?.quoteToken?.symbol
+          }</a>
+👉 Previous MarketCap: $${pairData.marketCap}
+👇 Current MarketCap: $${currentMarketCap}
 
 ⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
 `;

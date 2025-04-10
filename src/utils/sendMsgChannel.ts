@@ -10,24 +10,19 @@ export const sendToChannels = async (pairData: any) => {
         Number(targetChannel),
         `🔗 Chain: ${pairData.chainId || "Ethereum"}
 📊 DEX: ${pairData.dexId || "Uniswap"}
-📍 Pair Address: <code>${pairData.pairAddress || "N/A"}</code>
+📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${
+          pairData.pairAddress
+        }">$${pairData.baseToken?.symbol} / ${pairData.quoteToken?.symbol}</a>
 
 📈 Trading Info:
     • Market Cap: $${pairData.marketCap || "N/A"}
+    • Native: ${pairData.priceNative || "N/A"}
+    • USD: $${pairData.priceUsd || "N/A"}
 
 💲 Base Token:
     • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
     • Name: ${pairData.baseToken?.name || "N/A"}
     • Symbol: ${pairData.baseToken?.symbol || "N/A"}
-
-💲 Quote Token:
-    • Address: <code>${pairData.quoteToken?.address || "N/A"}</code>
-    • Name: ${pairData.quoteToken?.name || "N/A"}
-    • Symbol: ${pairData.quoteToken?.symbol || "N/A"}
-
-💰 Price:
-    • Native: ${pairData.priceNative || "N/A"}
-    • USD: $${pairData.priceUsd || "N/A"}
 
 💧 Liquidity:
     • USD: $${pairData.liquidity?.usd || "N/A"}
