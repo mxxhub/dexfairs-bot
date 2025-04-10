@@ -47,7 +47,7 @@ export const monitorPairMC = async (pairData: IPair) => {
 🚨🚨🚨 All Time High! 🚨🚨🚨
 
 🔗 Chain: ${pairData.chainId}
-📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${pairData.pairAddress}">$${pairInfo?.data?.baseToken?.symbol} / ${pairInfo?.data?.quoteToken?.symbol}</a>
+📍 Pair Info: <a href="${pairInfo?.data?.url}">$${pairInfo?.data?.baseToken?.symbol} / ${pairInfo?.data?.quoteToken?.symbol}</a>
 👉 Previous MarketCap: ${marketCap}
 👆 Current MarketCap: ${pairInfo?.data.marketCap}
 
@@ -72,7 +72,6 @@ export const monitorPairMC = async (pairData: IPair) => {
 
     console.log("succeed in getting pair info");
     const currentMarketCap = Number(pairInfo.data?.marketCap);
-    console.log("currentMarketCap", currentMarketCap);
 
     if (
       flag &&
@@ -88,11 +87,9 @@ export const monitorPairMC = async (pairData: IPair) => {
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 
 🔗 Chain: ${pairData.chainId}
-📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${
-            pairData.pairAddress
-          }">$${pairInfo?.data?.baseToken?.symbol} / ${
-            pairInfo?.data?.quoteToken?.symbol
-          }</a>
+📍 Pair Info: <a href="${pairInfo?.data?.url}">$${
+            pairInfo?.data?.baseToken?.symbol
+          } / ${pairInfo?.data?.quoteToken?.symbol}</a>
 👉 Previous MarketCap: $${pairData.marketCap}
 👇 Current MarketCap: $${currentMarketCap}
 

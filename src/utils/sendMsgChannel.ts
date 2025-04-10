@@ -10,9 +10,9 @@ export const sendToChannels = async (pairData: any) => {
         Number(targetChannel),
         `🔗 Chain: ${pairData.chainId || "Ethereum"}
 📊 DEX: ${pairData.dexId || "Uniswap"}
-📍 Pair Info: <a href="https://dexscreener.com/${pairData.chainId}/${
-          pairData.pairAddress
-        }">$${pairData.baseToken?.symbol} / ${pairData.quoteToken?.symbol}</a>
+📍 Pair Info: <a href="${pairData?.url}">$${pairData.baseToken?.symbol} / ${
+          pairData.quoteToken?.symbol
+        }</a>
 
 📈 Trading Info:
     • Market Cap: $${pairData.marketCap || "N/A"}
