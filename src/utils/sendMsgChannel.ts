@@ -15,9 +15,9 @@ export const sendToChannels = async (pairData: any) => {
         }</a>
 
 📈 Trading Info:
-    • Market Cap: $${pairData.marketCap || "N/A"}
-    • Native: ${pairData.priceNative || "N/A"}
-    • USD: $${pairData.priceUsd || "N/A"}
+    • Market Cap: $${pairData.marketCap.toLocaleString() || "N/A"}
+    • Native: ${pairData.priceNative.toLocaleString() || "N/A"}
+    • USD: $${pairData.priceUsd.toLocaleString() || "N/A"}
 
 💲 Base Token:
     • Address: <code>${pairData.baseToken?.address || "N/A"}</code>
@@ -25,11 +25,11 @@ export const sendToChannels = async (pairData: any) => {
     • Symbol: ${pairData.baseToken?.symbol || "N/A"}
 
 💧 Liquidity:
-    • USD: $${pairData.liquidity?.usd || "N/A"}
-    • Base: ${pairData.liquidity?.base || "N/A"} ${
+    • USD: $${pairData.liquidity?.usd.toLocaleString() || "N/A"}
+    • Base: ${pairData.liquidity?.base.toLocaleString() || "N/A"} ${
           pairData.baseToken?.symbol || ""
         }
-    • Quote: ${pairData.liquidity?.quote || "N/A"} ${
+    • Quote: ${pairData.liquidity?.quote.toLocaleString() || "N/A"} ${
           pairData.quoteToken?.symbol || ""
         }
 

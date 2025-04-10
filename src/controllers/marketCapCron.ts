@@ -47,9 +47,11 @@ export const monitorPairMC = async (pairData: IPair) => {
 🚨🚨🚨 All Time High! 🚨🚨🚨
 
 🔗 Chain: ${pairData.chainId}
-📍 Pair Info: <a href="${pairInfo?.data?.url}">$${pairInfo?.data?.baseToken?.symbol} / ${pairInfo?.data?.quoteToken?.symbol}</a>
-👉 Previous MarketCap: ${marketCap}
-👆 Current MarketCap: ${pairInfo?.data.marketCap}
+📍 Pair Info: <a href="${pairInfo?.data?.url}">$${
+        pairInfo?.data?.baseToken?.symbol
+      } / ${pairInfo?.data?.quoteToken?.symbol}</a>
+👉 Previous MarketCap: ${marketCap.toLocaleString()}
+👆 Current MarketCap: ${pairInfo?.data.marketCap.toLocaleString()}
 
 ℹ️ Market cap has increased ℹ️
 `;
@@ -90,8 +92,8 @@ export const monitorPairMC = async (pairData: IPair) => {
 📍 Pair Info: <a href="${pairInfo?.data?.url}">$${
             pairInfo?.data?.baseToken?.symbol
           } / ${pairInfo?.data?.quoteToken?.symbol}</a>
-👉 Previous MarketCap: $${pairData.marketCap}
-👇 Current MarketCap: $${currentMarketCap}
+👉 Previous MarketCap: $${pairData.marketCap.toLocaleString()}
+👇 Current MarketCap: $${currentMarketCap.toLocaleString()}
 
 ⚠️ Market cap has fallen more than ${marketCapPercentage * 100}% ⚠️
 `;
