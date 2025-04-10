@@ -78,11 +78,13 @@ Current MarketCap: ${pairInfo?.data.marketCap}
     if (
       flag &&
       !isNaN(currentMarketCap) &&
-      currentMarketCap < Number(updatedMarketCap) * marketCapPercentage
+      currentMarketCap < marketCap * marketCapPercentage
     ) {
       if (targetChannel.length > 0) {
         for (let i = 0; i < targetChannel.length; i++) {
-          console.log("market cap is less than 50% of the pair's market cap");
+          console.log(
+            `market cap is less than ${marketCapPercentage}% of the pair's market cap`
+          );
           const allTimeLowAlertMessage = `
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 

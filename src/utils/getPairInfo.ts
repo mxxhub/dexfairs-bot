@@ -11,8 +11,6 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
       `https://api.dexscreener.io/latest/dex/pairs/${chainId}/${pairAddress}`
     );
 
-    console.log("response of getting pair data: ", response.data.pair);
-
     if (!response?.data) {
       return {
         success: false,
