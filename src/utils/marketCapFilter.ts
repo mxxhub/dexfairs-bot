@@ -57,7 +57,6 @@ export const getChannelsforAlert = (
 
   let channels: string[] = [];
 
-  // Filter channels where marketCap is greater than the minimum threshold
   const filteredChannels = MARKET_CAP_RANGES.filter(
     (range) => marketCap >= range.min
   );
@@ -68,10 +67,6 @@ export const getChannelsforAlert = (
       }
     }
   }
-
-  // filteredChannels.map((fc: MarketCapRange) =>
-  //   channels.push(fc.channelId.toString())
-  // );
   return channels;
 };
 
@@ -82,11 +77,3 @@ export const getTargetChannels = (chainId: string) => {
     }
   }
 };
-
-// export const getChannelsforAlert = (chainId: string) => {
-//   for (let i = 0; i < channelsForAlert.length; i++) {
-//     if (chainId === channelsForAlert[i].chainId) {
-//       return channelsForAlert[i].channel;
-//     }
-//   }
-// };

@@ -7,30 +7,12 @@ import {
   getChannelsforAlert,
   getTargetChannels,
 } from "../utils/marketCapFilter";
-import { deletePairData } from "../db/controllers/deletePairData";
 import { IPair } from "../@types/global";
 import { updatePair } from "../db/controllers/updatePairData";
 
 dotenv.config();
 
 export let cronjobs: { job: cron.ScheduledTask; pairAddress: string }[] = [];
-// export const startMarketCapMonitoring = async () => {
-//   try {
-//     console.log("Monitoring MarketCap");
-//     const pairs = await getPairDataFromDB();
-//     console.log("pairs", pairs);
-//     if (pairs && pairs.length > 0) {
-//       for (let i = 0; i < pairs.length; i++) {
-//         const job = cron.schedule("*/5 * * * *", () => {
-//           monitorPairMC(pairs[i] as IPair);
-//         });
-//         cronjobs.push({ job: job, pairAddress: pairs[i].pairAddress });
-//       }
-//     }
-//   } catch (err) {
-//     console.log("Error in startMarketCapMonitoring:", err);
-//   }
-// };
 
 export const startMarketCapMonitoring = async () => {
   try {
@@ -66,7 +48,7 @@ export const monitorPairMC = async (pairData: IPair) => {
         pairInfo.data.marketCap
       );
 
-      const alertMessage = `
+      const allTimeHighAlertMessage = `
 🚨🚨🚨 All Time High! 🚨🚨🚨
 
 Chain: ${pairData.chainId}
@@ -79,7 +61,7 @@ Current Market Cap: $${updatedMarketCap}
 
       try {
         const targetChannel = getTargetChannels(pairData.chainId);
-        await bot.sendMessage(Number(targetChannel), alertMessage, {
+        await bot.sendMessage(Number(targetChannel), allTimeHighAlertMessage, {
           parse_mode: "HTML",
           disable_web_page_preview: true,
         });
@@ -92,11 +74,11 @@ Current Market Cap: $${updatedMarketCap}
       }
       flag = true;
     }
+
     console.log("succeed in getting pair info");
     const currentMarketCap = Number(pairInfo.data?.marketCap);
     console.log("currentMarketCap", currentMarketCap);
 
-    // Check if market cap is less than 50% of the pair's market cap
     if (
       flag &&
       !isNaN(currentMarketCap) &&
@@ -105,7 +87,7 @@ Current Market Cap: $${updatedMarketCap}
       if (targetChannel.length > 0) {
         for (let i = 0; i < targetChannel.length; i++) {
           console.log("market cap is less than 50% of the pair's market cap");
-          const alertMessage = `
+          const allTimeLowAlertMessage = `
 🚨🚨🚨 All Time Low! 🚨🚨🚨
 
 Chain: ${pairData.chainId}
@@ -117,7 +99,7 @@ Current Market Cap: $${currentMarketCap}
 `;
 
           try {
-            await bot.sendMessage(targetChannel[i], alertMessage, {
+            await bot.sendMessage(targetChannel[i], allTimeLowAlertMessage, {
               parse_mode: "HTML",
               disable_web_page_preview: true,
             });
@@ -130,6 +112,7 @@ Current Market Cap: $${currentMarketCap}
           }
         }
       }
+      flag = false;
 
       // await deletePairData(pairData.pairAddress);
 
@@ -140,7 +123,6 @@ Current Market Cap: $${currentMarketCap}
       //     console.log("cronjob is stopped");
       //   }
       // }
-      flag = false;
     }
   }
 };
