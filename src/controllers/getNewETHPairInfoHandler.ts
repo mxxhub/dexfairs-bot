@@ -8,7 +8,6 @@ import {
 import { getPairInfo } from "../utils/getPairInfo";
 import { sendToChannels } from "../utils/sendMsgChannel";
 import { saveData } from "../db/controllers/saveData";
-import { cronjobs, monitorPairMC } from "./marketCapCron";
 
 const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
   try {
@@ -24,15 +23,6 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
             await sendToChannels(pairInfo.data)
               .then(async () => {
                 await saveData(pairInfo.data);
-                // .then(() => {
-                //   // push to cronjobs array
-                //   const job = cron.schedule("*/5 * * * *", () => {
-                //     monitorPairMC(pairInfo.data);
-                //   });
-
-                //   cronjobs.push({ job: job, pairAddress: pairAdd });
-                // })
-                // .catch((err) => console.log(err));
               })
               .catch((err) => console.log(err));
           } else {

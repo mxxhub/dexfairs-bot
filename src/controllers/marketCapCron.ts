@@ -126,7 +126,6 @@ export const monitorPairMC = async (pairData: IPair) => {
       // }
     }
   }
-  console.log("flag: ", flag);
 };
 
 // import cron from "node-cron";
