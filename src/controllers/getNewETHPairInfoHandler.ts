@@ -23,16 +23,16 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           if (pairInfo && pairInfo.success) {
             await sendToChannels(pairInfo.data)
               .then(async () => {
-                await saveData(pairInfo.data)
-                  .then(() => {
-                    // push to cronjobs array
-                    const job = cron.schedule("*/5 * * * *", () => {
-                      monitorPairMC(pairInfo.data);
-                    });
+                await saveData(pairInfo.data);
+                // .then(() => {
+                //   // push to cronjobs array
+                //   const job = cron.schedule("*/5 * * * *", () => {
+                //     monitorPairMC(pairInfo.data);
+                //   });
 
-                    cronjobs.push({ job: job, pairAddress: pairAdd });
-                  })
-                  .catch((err) => console.log(err));
+                //   cronjobs.push({ job: job, pairAddress: pairAdd });
+                // })
+                // .catch((err) => console.log(err));
               })
               .catch((err) => console.log(err));
           } else {
