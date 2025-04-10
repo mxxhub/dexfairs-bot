@@ -32,7 +32,7 @@ export const startMarketCapMonitoring = async () => {
 };
 
 export const monitorPairMC = async (pairData: IPair) => {
-  let updatedMarketCap;
+  let updatedMarketCap: number = 0;
   let flag: boolean = true;
   console.log("flag: ", flag);
   const marketCap = Number(pairData?.marketCap);
@@ -43,18 +43,15 @@ export const monitorPairMC = async (pairData: IPair) => {
 
   if (pairInfo?.success) {
     if (marketCap < pairInfo?.data.marketCap) {
-      updatedMarketCap = updatePair(
-        pairInfo.data.pairAddress,
-        pairInfo.data.marketCap
-      );
+      await updatePair(pairInfo.data.pairAddress, pairInfo.data.marketCap);
 
       const allTimeHighAlertMessage = `
 🚨🚨🚨 All Time High! 🚨🚨🚨
 
 Chain: ${pairData.chainId}
 Pair Address: <code>${pairData.pairAddress}</code>
-First Market Cap: $${pairData.marketCap}
-Current Market Cap: $${updatedMarketCap}
+First Market Cap: ${marketCap}
+Current Market Cap: ${pairInfo?.data.marketCap}
 
 ℹ️ Market cap has increased ℹ️
 `;
