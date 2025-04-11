@@ -35,8 +35,8 @@ export const startMarketCapMonitoring = async () => {
 export const monitorPairMC = async (pairData: IPair) => {
   const flag = pairData?.flag;
   const marketCap = Number(pairData?.marketCap);
-  const targetChannel = getChannelsforAlert(marketCap, pairData.chainId);
   const pairInfo = await getPairInfo(pairData.chainId, pairData.pairAddress);
+
   const marketCapPercentage = 1 - Number(process.env.MARKET_CAP_PERCENTAGE);
 
   if (pairInfo?.success) {
@@ -56,8 +56,8 @@ export const monitorPairMC = async (pairData: IPair) => {
 ℹ️ Market cap has increased ℹ️
 `;
 
+      const targetChannel = getTargetChannels(pairData.chainId);
       try {
-        const targetChannel = getTargetChannels(pairData.chainId);
         await bot.sendMessage(Number(targetChannel), allTimeHighAlertMessage, {
           parse_mode: "HTML",
           disable_web_page_preview: true,
@@ -80,8 +80,12 @@ export const monitorPairMC = async (pairData: IPair) => {
       !isNaN(currentMarketCap) &&
       currentMarketCap < marketCap * marketCapPercentage
     ) {
-      if (targetChannel.length > 0) {
-        for (let i = 0; i < targetChannel.length; i++) {
+      const targetChannels = getChannelsforAlert(
+        pairInfo?.data.marketCap,
+        pairData.chainId
+      );
+      if (targetChannels.length > 0) {
+        for (let i = 0; i < targetChannels.length; i++) {
           console.log(
             `market cap is less than ${marketCapPercentage}% of the pair's market cap`
           );
@@ -99,16 +103,16 @@ export const monitorPairMC = async (pairData: IPair) => {
 `;
 
           try {
-            await bot.sendMessage(targetChannel[i], allTimeLowAlertMessage, {
+            await bot.sendMessage(targetChannels[i], allTimeLowAlertMessage, {
               parse_mode: "HTML",
               disable_web_page_preview: true,
             });
 
             await updateFlag(pairData.pairAddress, false);
-            console.log(`Alert sent to channel ${targetChannel[i]}`);
+            console.log(`Alert sent to channel ${targetChannels[i]}`);
           } catch (error) {
             console.error(
-              `Error sending alert to channel ${targetChannel[i]}:`,
+              `Error sending alert to channel ${targetChannels[i]}:`,
               error
             );
           }
