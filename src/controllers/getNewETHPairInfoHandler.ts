@@ -24,7 +24,6 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
       case "ethereum":
         CHAINID = eth_chain_id;
         break;
-
       case "base":
         CHAINID = base_chain_id;
         break;
@@ -37,17 +36,17 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
     const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
     const response = await axios.get(url);
     const result = response.data.result;
-    console.log("result: ", result);
+    console.log("GoPlus API result for", tokenAddress, ":", result);
+
     if (!result) {
       console.log("No data returned");
       return;
     }
-
     const status = checkScam(result);
-
-    return { status: status, result: result };
+    return { status, result };
   } catch (err) {
     console.log("Error checking if pair is scam one: ", err);
+    return null;
   }
 };
 
@@ -58,24 +57,28 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
         const pairAdd = pair.toString();
         console.log(`Received new pair on ${network}:`);
         console.log("token0:", token0, "token1:", token1, "pair:", pair);
-        const data = await checkScamPair(network, token1);
-        console.log("status: ", data?.status);
-        if (!data?.status) {
-          setTimeout(async () => {
-            const pairInfo = await getPairInfo(network, pairAdd);
-            if (pairInfo && pairInfo.success) {
-              await sendToChannels(pairInfo.data)
-                .then(async () => {
-                  await saveData(pairInfo.data);
-                })
-                .catch((err) => console.log(err));
-            } else {
-              console.log("Error fetching pair info:", pairInfo?.message);
-            }
-          }, 5 * 60 * 1000); // 5 mins delay
-        } else {
+        const [data1, data2] = await Promise.all([
+          checkScamPair(network, token0),
+          checkScamPair(network, token1),
+        ]);
+        if (!data1 || !data2) {
+          console.log("Skipping due to missing token data");
+          return;
+        }
+        console.log(
+          "first status: ",
+          data1.status,
+          "second status: ",
+          data2.status
+        );
+
+        if (data1.status || data2.status) {
           console.log("Scam Pair detected");
-          let EXPLORER_URL: string = "";
+
+          const scamToken = data1.status ? token0 : token1;
+          const scamData = data1.status ? data1.result : data2.result;
+
+          let EXPLORER_URL = "";
           switch (network) {
             case "ethereum":
               EXPLORER_URL = `https://etherscan.io/address/${pair}`;
@@ -86,39 +89,50 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
             case "base":
               EXPLORER_URL = `https://basescan.org/address/${pair}`;
               break;
-            default:
-              break;
           }
 
           const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
-          const allTimeLowAlertMessage = `
-⚠️⚠️⚠️ Scam Pair Detected! ⚠️⚠️⚠️
+          const alertMessage = `
+⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
- - Honeypot : ${data.result.is_honeypot == "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Mintable : ${data.result.is_mintable == "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Ownership : ${
-   data.result.can_take_back_ownership == "1" ? "Yes 🙅‍♂️" : "No ✅"
+ - Honeypot : ${scamData.is_honeypot === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Mintable : ${scamData.is_mintable === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Ownership Reclaimable : ${
+   scamData.can_take_back_ownership === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Hidden Owner : ${data.result.hidden_owner == "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Hidden Owner : ${scamData.hidden_owner === "1" ? "Yes 🙅‍♂️" : "No ✅"}
  - Slippage Modifiable : ${
-   data.result.slippage_modifiable == "1" ? "Yes 🙅‍♂️" : "No ✅"
+   scamData.slippage_modifiable === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Buy Tax >= 10 : ${parseFloat(data.result.buy_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"}
- - Sell Tax >= 10 : ${
-   parseFloat(data.result.sell_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Blacklisted : ${data.result.is_blacklisted == "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Can not sell : ${data.result.cannot_sell_all == "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Buy Tax >= 10% : ${parseFloat(scamData.buy_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"}
+ - Sell Tax >= 10% : ${parseFloat(scamData.sell_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"}
+ - Blacklisted : ${scamData.is_blacklisted === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Cannot Sell All : ${scamData.cannot_sell_all === "1" ? "Yes 🙅‍♂️" : "No ✅"}
  - Transfer Pausable : ${
-   data.result.transfer_pausable == "1" ? "Yes 🙅‍♂️" : "No ✅"
+   scamData.transfer_pausable === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
-          await bot.sendMessage(SCAM_CHANNEL, allTimeLowAlertMessage, {
+
+          await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
             parse_mode: "HTML",
             disable_web_page_preview: true,
           });
+        } else {
+          setTimeout(async () => {
+            const pairInfo = await getPairInfo(network, pairAdd);
+            if (pairInfo && pairInfo.success) {
+              try {
+                await sendToChannels(pairInfo.data);
+                await saveData(pairInfo.data);
+              } catch (err) {
+                console.log("Error sending or saving data:", err);
+              }
+            } else {
+              console.log("Error fetching pair info:", pairInfo?.message);
+            }
+          }, 5 * 60 * 1000); // 5 minutes
         }
       } catch (err) {
         console.error("Error fetching pair info:", err);
