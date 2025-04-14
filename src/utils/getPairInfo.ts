@@ -51,6 +51,7 @@ Liquidity: ${liquidity}
         parse_mode: "HTML",
         disable_web_page_preview: true,
       });
+      return;
     }
     return {
       success: true,
