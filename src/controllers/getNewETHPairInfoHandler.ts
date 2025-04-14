@@ -132,7 +132,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 
 ChainId: ${pairInfo?.data?.chainId}
 PairAddress: ${pairInfo?.data?.pairAddress}
-Liquidity: ${pairInfo?.data?.liquidity}
+Liquidity: ${pairInfo?.data?.liquidity.usd}
 `;
                   await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
                     parse_mode: "HTML",
