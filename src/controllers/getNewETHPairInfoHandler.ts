@@ -36,6 +36,7 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
     const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
     const response = await axios.get(url);
     const result = response.data.result;
+    console.log("GoPlus API result for", tokenAddress, ":", result);
 
     if (!result) {
       console.log("No data returned");
@@ -51,20 +52,11 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
 
 const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
   try {
-    eventEmitter.on("newPair", async ({ token0, token1, pair, liquidity }) => {
+    eventEmitter.on("newPair", async ({ token0, token1, pair }) => {
       try {
         const pairAdd = pair.toString();
         console.log(`Received new pair on ${network}:`);
-        console.log(
-          "token0:",
-          token0,
-          "token1:",
-          token1,
-          "pair:",
-          pair,
-          "liquidity: ",
-          liquidity
-        );
+        console.log("token0:", token0, "token1:", token1, "pair:", pair);
         const [data1, data2] = await Promise.all([
           checkScamPair(network, token0),
           checkScamPair(network, token1),
