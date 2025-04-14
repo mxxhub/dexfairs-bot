@@ -36,7 +36,6 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
     const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
     const response = await axios.get(url);
     const result = response.data.result;
-    console.log("GoPlus API result for", tokenAddress, ":", result);
 
     if (!result) {
       console.log("No data returned");
