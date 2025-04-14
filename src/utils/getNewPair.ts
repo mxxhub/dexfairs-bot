@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
 import { EventEmitter } from "events";
+import { formatUnits } from "ethers";
 
 dotenv.config();
 
@@ -21,6 +22,18 @@ const getNewPair = (
 
     const factoryABI = [
       "event PairCreated(address indexed token0, address indexed token1, address pair, uint)",
+    ];
+
+    const pairABI = [
+      "function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)",
+    ];
+
+    const erc20ABI = [
+      "function balanceOf(address owner) view returns (uint256)",
+      "function decimals() view returns (uint8)",
+      "function totalSupply() view returns (uint256)",
+      "function symbol() view returns (string)",
+      "function name() view returns (string)",
     ];
 
     const createProvider = () => {
@@ -58,7 +71,47 @@ const getNewPair = (
         factoryContract.on(
           "PairCreated",
           async (token0: string, token1: string, pair: string) => {
-            eventEmitter.emit("newPair", { token0, token1, pair });
+            try {
+              const pairContract = new ethers.Contract(pair, pairABI, provider);
+
+              // Get reserves in smallest unit (e.g., 10^18 for most tokens)
+              const { reserve0, reserve1 } = await pairContract.getReserves();
+
+              // Get token contracts to fetch decimals
+              const token0Contract = new ethers.Contract(
+                token0,
+                erc20ABI,
+                provider
+              );
+              const token1Contract = new ethers.Contract(
+                token1,
+                erc20ABI,
+                provider
+              );
+
+              // Fetch decimals for both tokens
+              const [decimals0, decimals1] = await Promise.all([
+                token0Contract.decimals(),
+                token1Contract.decimals(),
+              ]);
+
+              // Convert reserves to actual token amounts based on decimals
+              const amount0 = formatUnits(reserve0, decimals0); // formatted for token0
+              const amount1 = formatUnits(reserve1, decimals1); // formatted for token1
+
+              // Emit new pair event with formatted reserves
+              eventEmitter.emit("newPair", {
+                token0,
+                token1,
+                pair,
+                liquidity: {
+                  reserve0: amount0,
+                  reserve1: amount1,
+                },
+              });
+            } catch (err) {
+              console.log("Error getting new pair", err);
+            }
           }
         );
       } catch (err) {
