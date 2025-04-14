@@ -34,25 +34,6 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
       };
     }
 
-    const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
-    const liquidity = Number(response?.data?.pair?.liquidity?.usd);
-    const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
-
-    const alertMessage = `
-⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
-
-ChainId: ${chainId}
-PairAddress: ${pairAddress}
-Liquidity: ${liquidity}
-`;
-
-    if (liquidity < MIN_LIQUIDITY) {
-      await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
-        parse_mode: "HTML",
-        disable_web_page_preview: true,
-      });
-      return;
-    }
     return {
       success: true,
       data: response.data.pair,
