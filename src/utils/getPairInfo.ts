@@ -41,7 +41,9 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
     const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
-liquidity: ${liquidity}
+ChainId: ${chainId}
+PairAddress: ${pairAddress}
+Liquidity: ${liquidity}
 `;
 
     if (liquidity < MIN_LIQUIDITY) {
