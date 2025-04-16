@@ -35,13 +35,14 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
     }
     const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
     const response = await axios.get(url);
-    const result = response.data.result[tokenAddress];
+    const result = response.data.result;
+    const checkToken = response.data.result[tokenAddress];
 
     if (!result) {
       console.log("No data returned");
       return;
     }
-    const status = checkScam(result);
+    const status = checkScam(checkToken);
     return { status, result };
   } catch (err) {
     console.log("Error checking if pair is scam one: ", err);
@@ -123,10 +124,10 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
             const pairInfo = await getPairInfo(network, pairAdd);
             if (pairInfo && pairInfo.success) {
               // try {
-              // const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
-              // const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
-              // console.log(pairInfo?.data?.liquidity.usd);
-              // if (Number(pairInfo?.data?.liquidity.usd) < MIN_LIQUIDITY) {
+              //                 const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
+              //                 const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
+              //                 console.log(pairInfo?.data?.liquidity.usd);
+              //                 if (Number(pairInfo?.data?.liquidity.usd) < MIN_LIQUIDITY) {
               //                   const alertMessage = `
               // ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
