@@ -77,6 +77,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 
           const scamToken = data1.status ? token0 : token1;
           const scamData = data1.status ? data1.result : data2.result;
+          const displayData = scamData[scamToken];
 
           let EXPLORER_URL = "";
           switch (network) {
@@ -95,21 +96,25 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
- - Honeypot : ${scamData.is_honeypot === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Mintable : ${scamData.is_mintable === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Honeypot : ${displayData.is_honeypot === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Mintable : ${displayData.is_mintable === "1" ? "Yes 🙅‍♂️" : "No ✅"}
  - Ownership Reclaimable : ${
-   scamData.can_take_back_ownership === "1" ? "Yes 🙅‍♂️" : "No ✅"
+   displayData.can_take_back_ownership === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Hidden Owner : ${scamData.hidden_owner === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Hidden Owner : ${displayData.hidden_owner === "1" ? "Yes 🙅‍♂️" : "No ✅"}
  - Slippage Modifiable : ${
-   scamData.slippage_modifiable === "1" ? "Yes 🙅‍♂️" : "No ✅"
+   displayData.slippage_modifiable === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Buy Tax >= 10% : ${parseFloat(scamData.buy_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"}
- - Sell Tax >= 10% : ${parseFloat(scamData.sell_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"}
- - Blacklisted : ${scamData.is_blacklisted === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Cannot Sell All : ${scamData.cannot_sell_all === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Buy Tax >= 10% : ${
+   parseFloat(displayData.buy_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"
+ }
+ - Sell Tax >= 10% : ${
+   parseFloat(displayData.sell_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"
+ }
+ - Blacklisted : ${displayData.is_blacklisted === "1" ? "Yes 🙅‍♂️" : "No ✅"}
+ - Cannot Sell All : ${displayData.cannot_sell_all === "1" ? "Yes 🙅‍♂️" : "No ✅"}
  - Transfer Pausable : ${
-   scamData.transfer_pausable === "1" ? "Yes 🙅‍♂️" : "No ✅"
+   displayData.transfer_pausable === "1" ? "Yes 🙅‍♂️" : "No ✅"
  }
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
