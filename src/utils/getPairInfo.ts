@@ -27,7 +27,7 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
     }
 
     const marketCap = Number(response?.data?.pair?.marketCap);
-    if (isNaN(marketCap) || marketCap < MIN_MARKET_CAP) {
+    if (isNaN(marketCap)) {
       return {
         success: false,
         message: `${response?.data?.pair?.chainId} ${response?.data?.pair?.pairAddress} Invalid market cap or below minimum requirement (${MIN_MARKET_CAP})`,
