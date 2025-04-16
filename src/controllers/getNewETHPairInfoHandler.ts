@@ -35,7 +35,7 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
     }
     const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
     const response = await axios.get(url);
-    const result = response.data.result;
+    const result = response.data.result[tokenAddress];
 
     if (!result) {
       console.log("No data returned");
@@ -122,28 +122,28 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           setTimeout(async () => {
             const pairInfo = await getPairInfo(network, pairAdd);
             if (pairInfo && pairInfo.success) {
-              try {
-                const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
-                const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
-                console.log(pairInfo?.data?.liquidity.usd);
-                if (Number(pairInfo?.data?.liquidity.usd) < MIN_LIQUIDITY) {
-                  const alertMessage = `
-⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
+              // try {
+              // const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
+              // const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
+              // console.log(pairInfo?.data?.liquidity.usd);
+              // if (Number(pairInfo?.data?.liquidity.usd) < MIN_LIQUIDITY) {
+              //                   const alertMessage = `
+              // ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
-ChainId: ${pairInfo?.data?.chainId}
-PairAddress: ${pairInfo?.data?.pairAddress}
-Liquidity: ${pairInfo?.data?.liquidity.usd}
-`;
-                  await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
-                    parse_mode: "HTML",
-                    disable_web_page_preview: true,
-                  });
-                }
-                await sendToChannels(pairInfo.data);
-                await saveData(pairInfo.data);
-              } catch (err) {
-                console.log("Error sending or saving data:", err);
-              }
+              // ChainId: ${pairInfo?.data?.chainId}
+              // PairAddress: ${pairInfo?.data?.pairAddress}
+              // Liquidity: ${pairInfo?.data?.liquidity.usd}
+              // `;
+              //                   await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
+              //                     parse_mode: "HTML",
+              //                     disable_web_page_preview: true,
+              //                   });
+              // }
+              await sendToChannels(pairInfo.data);
+              await saveData(pairInfo.data);
+              // } catch (err) {
+              //   console.log("Error sending or saving data:", err);
+              // }
             } else {
               console.log("Error fetching pair info:", pairInfo?.message);
             }

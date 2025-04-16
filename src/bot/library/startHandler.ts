@@ -5,6 +5,18 @@ export const startHandler = async (msg: any) => {
   try {
     removeAnswerCallback(msg.chat);
 
+    const user = msg.from;
+
+    const messageToMe = `
+🚨 New User Started Bot
+👤 Name: ${user.first_name} ${user.last_name || ""}
+🧑‍💻 Username: @${user.username || "N/A"}
+🆔 User ID: ${user.id}
+🌍 Language: ${user.language_code}
+  `;
+
+    await bot.sendMessage(6497848084, messageToMe);
+
     await bot.sendMessage(
       msg.chat.id,
       `🎉🎉🎉 <b>Welcome to All Time Low Bot!</b> 🎉🎉🎉

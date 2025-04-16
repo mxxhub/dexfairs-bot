@@ -1,6 +1,7 @@
 import { Token } from "../@types/global";
 
 export const checkScam = (token: Token) => {
+  console.log("token of checking: ", token);
   return (
     token.is_honeypot === "1" ||
     token.is_mintable === "1" ||
