@@ -14,7 +14,11 @@ import { bot } from "../bot";
 
 dotenv.config();
 
-const checkScamPair = async (chainId: string, tokenAddress: string) => {
+const checkScamPair = async (
+  chainId: string,
+  tokenAddress: string,
+  pair: string
+) => {
   try {
     let CHAINID: number = 0;
     const eth_chain_id = Number(process.env.ETH_CHAIN_ID);
@@ -33,17 +37,23 @@ const checkScamPair = async (chainId: string, tokenAddress: string) => {
       default:
         break;
     }
-    const url = `https://api.gopluslabs.io/api/v1/token_security/${CHAINID}?contract_addresses=${tokenAddress}`;
-    const response = await axios.get(url);
-    const result = response.data.result;
-    const checkToken = response.data.result[tokenAddress];
+    const apiUrl = `https://api.honeypot.is/v2/IsHoneypot?address=${tokenAddress}&pair=${pair}&chainID=${CHAINID}`;
+    const delay = (ms: number) => {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    };
 
-    if (!result) {
+    await delay(10000);
+
+    const response = await axios.get(apiUrl);
+    const data = response.data;
+    console.log(data);
+
+    if (!response) {
       console.log("No data returned");
       return;
     }
-    const status = checkScam(checkToken);
-    return { status, result };
+    const status = checkScam(data);
+    return { status, data };
   } catch (err) {
     console.log("Error checking if pair is scam one: ", err);
     return null;
@@ -56,10 +66,19 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
       try {
         const pairAdd = pair.toString();
         console.log(`Received new pair on ${network}:`);
-        console.log("token0:", token0, "token1:", token1, "pair:", pair);
+        console.log(
+          "Received new pair on ",
+          network,
+          ": token0:",
+          token0,
+          "token1:",
+          token1,
+          "pair:",
+          pair
+        );
         const [data1, data2] = await Promise.all([
-          checkScamPair(network, token0),
-          checkScamPair(network, token1),
+          checkScamPair(network, token0, pair),
+          checkScamPair(network, token1, pair),
         ]);
         if (!data1 || !data2) {
           console.log("Skipping due to missing token data");
@@ -76,9 +95,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           console.log("Scam Pair detected");
 
           const scamToken = data1.status ? token0 : token1;
-          const scamData = data1.status ? data1.result : data2.result;
-          const displayData = scamData[scamToken];
-          if (!displayData) return;
+          const scamData = data1.status ? data1.data : data2.data;
 
           let EXPLORER_URL = "";
           switch (network) {
@@ -97,27 +114,19 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
- - Honeypot : ${displayData?.is_honeypot === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Mintable : ${displayData?.is_mintable === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Ownership Reclaimable : ${
-   displayData?.can_take_back_ownership === "1" ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Hidden Owner : ${displayData?.hidden_owner === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Slippage Modifiable : ${
-   displayData?.slippage_modifiable === "1" ? "Yes 🙅‍♂️" : "No ✅"
+ - Honeypot : ${
+   scamData?.honeypotResult?.isHoneypot === true ? "Yes 🙅‍♂️" : "No ✅"
  }
  - Buy Tax >= 10% : ${
-   parseFloat(displayData?.buy_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"
+   scamData?.simulationResult?.buyTax > 10 ? "Yes 🙅‍♂️" : "No ✅"
  }
  - Sell Tax >= 10% : ${
-   parseFloat(displayData?.sell_tax) >= 10 ? "Yes 🙅‍♂️" : "No ✅"
+   scamData?.simulationResult?.sellTax > 10 ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Blacklisted : ${displayData?.is_blacklisted === "1" ? "Yes 🙅‍♂️" : "No ✅"}
- - Cannot Sell All : ${
-   displayData?.cannot_sell_all === "1" ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Transfer Pausable : ${
-   displayData?.transfer_pausable === "1" ? "Yes 🙅‍♂️" : "No ✅"
+ - Token Holders : ${scamData?.token?.totalHolders < 10 ? "Yes 🙅‍♂️" : "No ✅"}
+ - Liquidity : ${scamData?.liquidity < 1 ? "Yes 🙅‍♂️" : "No ✅"}
+ - ContractCode State : ${
+   scamData?.honeypotResult?.isHoneypot === false ? "Yes 🙅‍♂️" : "No ✅"
  }
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
