@@ -46,7 +46,6 @@ const checkScamPair = async (
 
     const response = await axios.get(apiUrl);
     const data = response.data;
-    console.log(data);
 
     if (!response) {
       console.log("No data returned");
@@ -111,6 +110,12 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           }
 
           const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
+          console.log(
+            scamData?.honeypotResult?.isHoneypot,
+            scamData?.simulationResult?.buyTax,
+            scamData?.simulationResult?.sellTax,
+            scamData?.pair.liquidity
+          );
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
@@ -123,11 +128,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - Sell Tax >= 10% : ${
    scamData?.simulationResult?.sellTax > 10 ? "Yes 🙅‍♂️" : "No ✅"
  }
- - Token Holders : ${scamData?.token?.totalHolders < 10 ? "Yes 🙅‍♂️" : "No ✅"}
- - Liquidity : ${scamData?.liquidity < 1 ? "Yes 🙅‍♂️" : "No ✅"}
- - ContractCode State : ${
-   scamData?.honeypotResult?.isHoneypot === false ? "Yes 🙅‍♂️" : "No ✅"
- }
+ - Liquidity : ${scamData?.pair.liquidity < 1 ? "Yes 🙅‍♂️" : "No ✅"}
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;

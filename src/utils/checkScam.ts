@@ -2,16 +2,14 @@ import { Token } from "../@types/global";
 
 export const checkScam = (data: Token) => {
   try {
-    console.log("token of checking: ", data);
     return (
       data.honeypotResult.isHoneypot === true ||
       data.simulationResult.buyTax > 10 ||
       data.simulationResult.sellTax > 10 ||
-      data.token.totalHolders < 10 ||
-      data.pair.liquidity < 1 ||
-      data.contractCode.openSource === false
+      data.pair.liquidity < 1
+      // data.contractCode.openSource === false
     );
   } catch (err) {
-    console.log(err);
+    console.log("Checking scam error: ", err);
   }
 };

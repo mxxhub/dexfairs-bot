@@ -14,13 +14,10 @@ export interface Token {
     buyTax: number;
     sellTax: number;
   };
-  token: {
-    totalHolders: number;
-  };
   pair: {
     liquidity: number;
   };
-  contractCode: {
-    openSource: boolean;
-  };
+  // contractCode: {
+  //   openSource: boolean;
+  // };
 }
