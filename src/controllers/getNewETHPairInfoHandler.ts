@@ -132,7 +132,9 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - OpenSource: ${scamData?.contractCode.openSource === false ? "🚫" : "✅"}
 
 🔍 Scanners 🔍
-<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${scamToken}">Token Sniffer</a>
+<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${
+            scamData?.token?.address
+          }">Token Sniffer</a>
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
