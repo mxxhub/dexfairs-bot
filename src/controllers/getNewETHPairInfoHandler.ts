@@ -116,12 +116,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
               break;
           }
           const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
-          console.log(
-            scamData?.honeypotResult?.isHoneypot,
-            scamData?.simulationResult?.buyTax,
-            scamData?.simulationResult?.sellTax,
-            scamData?.pair.liquidity
-          );
+          console.log(scamData);
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
@@ -131,12 +126,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - Liquidity : ${scamData?.pair.liquidity < 1 ? "🚫" : "✅"}
  - OpenSource: ${scamData?.contractCode.openSource === false ? "🚫" : "✅"}
 
-🔍 Scanners 🔍
-<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${
-            scamData?.token?.address
-          }">Token Sniffer</a>
-
-<a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
+<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
 
           await bot.sendMessage(SCAM_CHANNEL, alertMessage, {
