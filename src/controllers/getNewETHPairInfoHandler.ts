@@ -97,18 +97,24 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const scamData = data1.status ? data1.data : data2.data;
 
           let EXPLORER_URL = "";
+          let CHAINID: number = 0;
+          const eth_chain_id = Number(process.env.ETH_CHAIN_ID);
+          const bnb_chain_id = Number(process.env.BNB_CHAIN_ID);
+          const base_chain_id = Number(process.env.BASE_CHAIN_ID);
           switch (network) {
             case "ethereum":
               EXPLORER_URL = `https://etherscan.io/address/${pair}`;
+              CHAINID = eth_chain_id;
               break;
             case "bsc":
               EXPLORER_URL = `https://bscscan.com/address/${pair}`;
+              CHAINID = bnb_chain_id;
               break;
             case "base":
               EXPLORER_URL = `https://basescan.org/address/${pair}`;
+              CHAINID = base_chain_id;
               break;
           }
-
           const SCAM_CHANNEL = Number(process.env.SCAM_CHANNEL);
           console.log(
             scamData?.honeypotResult?.isHoneypot,
@@ -124,6 +130,9 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - Sell Tax >= 10% : ${scamData?.simulationResult?.sellTax > 10 ? "🚫" : "✅"}
  - Liquidity : ${scamData?.pair.liquidity < 1 ? "🚫" : "✅"}
  - OpenSource: ${scamData?.contractCode.openSource === false ? "🚫" : "✅"}
+
+🔍 Scanners 🔍
+<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${scamToken}">Token Sniffer</a>
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
