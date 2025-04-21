@@ -119,16 +119,10 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
- - Honeypot : ${
-   scamData?.honeypotResult?.isHoneypot === true ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Buy Tax >= 10% : ${
-   scamData?.simulationResult?.buyTax > 10 ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Sell Tax >= 10% : ${
-   scamData?.simulationResult?.sellTax > 10 ? "Yes 🙅‍♂️" : "No ✅"
- }
- - Liquidity : ${scamData?.pair.liquidity < 1 ? "Yes 🙅‍♂️" : "No ✅"}
+ - Honeypot : ${scamData?.honeypotResult?.isHoneypot === true ? "🚫" : "✅"}
+ - Buy Tax >= 10% : ${scamData?.simulationResult?.buyTax > 10 ? "🚫" : "✅"}
+ - Sell Tax >= 10% : ${scamData?.simulationResult?.sellTax > 10 ? "🚫" : "✅"}
+ - Liquidity : ${scamData?.pair.liquidity < 1 ? "🚫" : "✅"}
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
