@@ -123,6 +123,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - Buy Tax >= 10% : ${scamData?.simulationResult?.buyTax > 10 ? "🚫" : "✅"}
  - Sell Tax >= 10% : ${scamData?.simulationResult?.sellTax > 10 ? "🚫" : "✅"}
  - Liquidity : ${scamData?.pair.liquidity < 1 ? "🚫" : "✅"}
+ - OpenSource: ${scamData?.contractCode.openSource === false ? "🚫" : "✅"}
 
 <a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;

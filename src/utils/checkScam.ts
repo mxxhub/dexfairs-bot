@@ -7,7 +7,6 @@ export const checkScam = (data: Token) => {
       data.simulationResult.buyTax > 10 ||
       data.simulationResult.sellTax > 10 ||
       data.pair.liquidity < 1
-      // data.contractCode.openSource === false
     );
   } catch (err) {
     console.log("Checking scam error: ", err);
