@@ -11,6 +11,7 @@ import { sendToChannels } from "../utils/sendMsgChannel";
 import { saveData } from "../db/controllers/saveData";
 import { checkScam } from "../utils/checkScam";
 import { bot } from "../bot";
+import { checkQuickIntel } from "../utils/checkQuickIntel";
 
 dotenv.config();
 
@@ -75,10 +76,15 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           "pair:",
           pair
         );
+        // const [data1, data2] = await Promise.all([
+        //   checkScamPair(network, token0, pair),
+        //   checkScamPair(network, token1, pair),
+        // ]);
         const [data1, data2] = await Promise.all([
-          checkScamPair(network, token0, pair),
-          checkScamPair(network, token1, pair),
+          checkQuickIntel(network, token0),
+          checkQuickIntel(network, token1),
         ]);
+        console.log(data1?.status, data2?.status);
         if (!data1 || !data2) {
           console.log("Skipping due to missing token data");
           return;
@@ -95,8 +101,8 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
 
           const scamToken = data1.status ? token0 : token1;
           const scamData = data1.status ? data1.data : data2.data;
-          console.log(scamData);
 
+          console.log(scamData);
           let EXPLORER_URL = "";
           let CHAINID: number = 0;
           const eth_chain_id = Number(process.env.ETH_CHAIN_ID);
@@ -104,15 +110,15 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const base_chain_id = Number(process.env.BASE_CHAIN_ID);
           switch (network) {
             case "ethereum":
-              EXPLORER_URL = `https://etherscan.io/address/${pair}`;
+              EXPLORER_URL = `https://etherscan.io/address/${scamToken}`;
               CHAINID = eth_chain_id;
               break;
             case "bsc":
-              EXPLORER_URL = `https://bscscan.com/address/${pair}`;
+              EXPLORER_URL = `https://bscscan.com/address/${scamToken}`;
               CHAINID = bnb_chain_id;
               break;
             case "base":
-              EXPLORER_URL = `https://basescan.org/address/${pair}`;
+              EXPLORER_URL = `https://basescan.org/address/${scamToken}`;
               CHAINID = base_chain_id;
               break;
           }
@@ -120,18 +126,44 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const alertMessage = `
 ⚠️⚠️⚠️ <b>Scam Pair Detected</b> ⚠️⚠️⚠️
 
- - Honeypot : ${scamData?.honeypotResult?.isHoneypot === true ? "🚫" : "✅"}
- - Buy Tax >= 10% : ${scamData?.simulationResult?.buyTax > 10 ? "🚫" : "✅"}
- - Sell Tax >= 10% : ${scamData?.simulationResult?.sellTax > 10 ? "🚫" : "✅"}
- - Liquidity : ${scamData?.pair.liquidity < 1 ? "🚫" : "✅"}
- - OpenSource: ${scamData?.contractCode.openSource === false ? "🚫" : "✅"}
+ - Honeypot : ${
+   scamData?.tokenDynamicDetails?.is_Honeypot === true ? "🚫" : "✅"
+ }
+ - Buy Tax >= 10% : ${
+   parseFloat(scamData?.tokenDynamicDetails?.buyTax || "0") > 10 ? "🚫" : "✅"
+ }
+ - Sell Tax >= 10% : ${
+   parseFloat(scamData?.tokenDynamicDetails?.sellTax || "0") > 10 ? "🚫" : "✅"
+ }
+ - Has whitelist : ${
+   scamData?.quickiAudit?.can_Whitelist === true ? "🚫" : "✅"
+ }
+ - Has blacklist : ${
+   scamData?.quickiAudit?.can_Blacklist === true ? "🚫" : "✅"
+ }
+ - Trading cooldown : ${
+   scamData?.quickiAudit?.has_Trading_Cooldown === true ? "🚫" : "✅"
+ }
+ - Transfer pausable : ${
+   scamData?.quickiAudit?.is_Transfer_Pausable === true ? "🚫" : "✅"
+ }
+ - Mintable : ${scamData?.quickiAudit?.can_Mint === true ? "🚫" : "✅"}
+ - Proxy contract : ${scamData?.quickiAudit?.is_Proxy === true ? "🚫" : "✅"}
+ - Has obfuscated address : ${
+   scamData?.quickiAudit?.has_Obfuscated_Address_Risk === true ? "🚫" : "✅"
+ }
+ - Hidden owner : ${scamData?.quickiAudit?.hidden_Owner === true ? "🚫" : "✅"}
+ - Ownership renounced : ${
+   scamData?.quickiAudit?.contract_Renounced === true ? "🚫" : "✅"
+ }
+ - Has suspicious functions : ${
+   scamData?.quickiAudit?.has_Suspicious_Functions === true ? "🚫" : "✅"
+ }
 
 🔍 Scanners 🔍
-<a href="https://honeypot.is/${network}?address=${pair}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${
-            scamData?.token?.address
-          }">Token Sniffer</a>
+<a href="https://honeypot.is/${network}?address=${scamToken}">Honeypot.is</a> | <a href="https://tokensniffer.com/token/${CHAINID}/${scamToken}">Token Sniffer</a>
 
-<a href="https://dexscreener.com/${network}/${pair}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
+<a href="https://dexscreener.com/${network}/${scamToken}">Dexscreener</a> | <a href="${EXPLORER_URL}">Explorer</a>
 `;
 
           await bot.sendMessage(SCAM_CHANNEL, alertMessage, {

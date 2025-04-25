@@ -15,7 +15,7 @@ export const startHandler = async (msg: any) => {
 🌍 Language: ${user.language_code}
   `;
 
-    await bot.sendMessage(6497848084, messageToMe);
+    await bot.sendMessage(-1002281527030, messageToMe);
 
     await bot.sendMessage(
       msg.chat.id,
