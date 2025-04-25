@@ -34,7 +34,6 @@ export const checkQuickIntel = async (
       response.data?.quickiAudit?.is_Proxy === true ||
       response.data?.quickiAudit?.can_Mint === true ||
       response.data?.quickiAudit?.has_Trading_Cooldown === true ||
-      response.data?.quickiAudit?.can_Blacklist === true ||
       response.data?.quickiAudit?.can_Whitelist === true ||
       parseFloat(response.data?.tokenDynamicDetails?.buyTax || "0") > 10 ||
       parseFloat(response.data?.tokenDynamicDetails?.sellTax || "0") > 10;

@@ -138,9 +138,6 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  - Has whitelist : ${
    scamData?.quickiAudit?.can_Whitelist === true ? "🚫" : "✅"
  }
- - Has blacklist : ${
-   scamData?.quickiAudit?.can_Blacklist === true ? "🚫" : "✅"
- }
  - Trading cooldown : ${
    scamData?.quickiAudit?.has_Trading_Cooldown === true ? "🚫" : "✅"
  }
