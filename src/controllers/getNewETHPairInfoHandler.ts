@@ -154,7 +154,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
  }
  - Hidden owner : ${scamData?.quickiAudit?.hidden_Owner === true ? "🚫" : "✅"}
  - Ownership renounced : ${
-   scamData?.quickiAudit?.contract_Renounced === true ? "🚫" : "✅"
+   scamData?.quickiAudit?.contract_Renounced === false ? "🚫" : "✅"
  }
  - Has suspicious functions : ${
    scamData?.quickiAudit?.has_Suspicious_Functions === true ? "🚫" : "✅"
