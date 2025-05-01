@@ -186,11 +186,15 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
                 ALL_PAIR_CHANNEL,
                 `
 🔗 Chain: ${pairInfo?.data?.chainId || "Ethereum"}
-📍 Pair Info: <a href="${pairInfo?.data?.url}">$${
-                  pairInfo.data?.baseToken?.symbol
+📍 Pair Info: <a href="${pairInfo?.data?.url}">${
+                  pairInfo?.data?.baseToken?.symbol
                 } / ${pairInfo.data?.quoteToken?.symbol}</a>
 
-⏰ Created: ${new Date(pairInfo.data.pairCreatedAt).toLocaleString()}`
+⏰ Created: ${new Date(pairInfo.data.pairCreatedAt).toLocaleString()}`,
+                {
+                  parse_mode: "HTML",
+                  disable_web_page_preview: true,
+                }
               );
               await sendToChannels(pairInfo.data);
               await saveData(pairInfo.data);
