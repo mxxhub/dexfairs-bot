@@ -8,9 +8,21 @@ const MIN_MARKET_CAP = Number(process.env.MARKET_CAP_LOW) || 200000;
 
 export const getPairInfo = async (chainId: string, pairAddress: string) => {
   try {
+    const RATE_LIMIT_CHANNEL = Number(process.env.RATE_LIMIT_CHANNEL);
     const response = await axios.get(
       `https://api.dexscreener.io/latest/dex/pairs/${chainId}/${pairAddress}`
     );
+
+    if (response?.status === 429) {
+      bot.sendMessage(
+        RATE_LIMIT_CHANNEL,
+        `Rate limit exceeded: ${response?.statusText}`
+      );
+      return {
+        success: false,
+        message: "Rate limit exceeded",
+      };
+    }
 
     if (!response?.data) {
       return {

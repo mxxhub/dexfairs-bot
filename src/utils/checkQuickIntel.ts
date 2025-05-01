@@ -13,13 +13,13 @@ export const checkQuickIntel = async (
       },
     };
 
-    if (chainId == "ethereum") chainId = "eth";
+    const mappedChainId = chainId === "ethereum" ? "eth" : chainId;
 
     const response = await axios.post(
       "https://api.quickintel.io/v1/getquickiauditfull",
       {
         tokenAddress: tokenAddress,
-        chain: chainId,
+        chain: mappedChainId,
       },
       config
     );

@@ -89,12 +89,6 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           console.log("Skipping due to missing token data");
           return;
         }
-        console.log(
-          "first status: ",
-          data1.status,
-          "second status: ",
-          data2.status
-        );
 
         if (data1.status || data2.status) {
           console.log("Scam Pair detected");
@@ -102,7 +96,6 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
           const scamToken = data1.status ? token0 : token1;
           const scamData = data1.status ? data1.data : data2.data;
 
-          console.log(scamData);
           let EXPLORER_URL = "";
           let CHAINID: number = 0;
           const eth_chain_id = Number(process.env.ETH_CHAIN_ID);
@@ -170,6 +163,7 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
         } else {
           setTimeout(async () => {
             const pairInfo = await getPairInfo(network, pairAdd);
+            const ALL_PAIR_CHANNEL = Number(process.env.ALL_PAIR_CHANNEL);
             if (pairInfo && pairInfo.success) {
               // try {
               //                 const MIN_LIQUIDITY = Number(process.env.MIN_LIQUIDITY);
@@ -188,6 +182,16 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
               //                     disable_web_page_preview: true,
               //                   });
               // }
+              await bot.sendMessage(
+                ALL_PAIR_CHANNEL,
+                `
+🔗 Chain: ${pairInfo?.data?.chainId || "Ethereum"}
+📍 Pair Info: <a href="${pairInfo?.data?.url}">$${
+                  pairInfo.data?.baseToken?.symbol
+                } / ${pairInfo.data?.quoteToken?.symbol}</a>
+
+⏰ Created: ${new Date(pairInfo.data.pairCreatedAt).toLocaleString()}`
+              );
               await sendToChannels(pairInfo.data);
               await saveData(pairInfo.data);
               // } catch (err) {
