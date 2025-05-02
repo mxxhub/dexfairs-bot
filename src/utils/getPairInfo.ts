@@ -14,14 +14,18 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
     );
 
     if (response?.status === 429) {
-      bot.sendMessage(
-        RATE_LIMIT_CHANNEL,
-        `Rate limit exceeded: ${response?.statusText}`
-      );
-      return {
-        success: false,
-        message: "Rate limit exceeded",
-      };
+      try {
+        bot.sendMessage(
+          RATE_LIMIT_CHANNEL,
+          `Rate limit exceeded: ${response?.statusText}`
+        );
+        return {
+          success: false,
+          message: "Rate limit exceeded",
+        };
+      } catch (err) {
+        console.log("rate limit error: ", err);
+      }
     }
 
     if (!response?.data) {

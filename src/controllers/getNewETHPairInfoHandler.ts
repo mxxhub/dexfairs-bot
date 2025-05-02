@@ -182,20 +182,24 @@ const monitorPair = async (eventEmitter: EventEmitter, network: string) => {
               //                     disable_web_page_preview: true,
               //                   });
               // }
-              await bot.sendMessage(
-                ALL_PAIR_CHANNEL,
-                `
+              try {
+                await bot.sendMessage(
+                  ALL_PAIR_CHANNEL,
+                  `
 🔗 Chain: ${pairInfo?.data?.chainId || "Ethereum"}
 📍 Pair Info: <a href="${pairInfo?.data?.url}">${
-                  pairInfo?.data?.baseToken?.symbol
-                } / ${pairInfo.data?.quoteToken?.symbol}</a>
-
+                    pairInfo?.data?.baseToken?.symbol
+                  } / ${pairInfo.data?.quoteToken?.symbol}</a>
+  
 ⏰ Created: ${new Date(pairInfo.data.pairCreatedAt).toLocaleString()}`,
-                {
-                  parse_mode: "HTML",
-                  disable_web_page_preview: true,
-                }
-              );
+                  {
+                    parse_mode: "HTML",
+                    disable_web_page_preview: true,
+                  }
+                );
+              } catch (err) {
+                console.log("Error sending message:", err);
+              }
               await sendToChannels(pairInfo.data);
               await saveData(pairInfo.data);
               // } catch (err) {
