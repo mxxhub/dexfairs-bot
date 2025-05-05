@@ -1,4 +1,5 @@
 import axios from "axios";
+import { bot } from "../bot";
 
 export const checkQuickIntel = async (
   chainId: string,
@@ -41,6 +42,18 @@ export const checkQuickIntel = async (
   } catch (err: any) {
     if (err.response) {
       console.error("Error Status:", err.response);
+      if (err.response.Status == 429 || err.response.data.statusCode) {
+        try {
+          const RATE_LIMIT_CHANNEL = Number(process.env.RATE_LIMIT_CHANNEL);
+          bot.sendMessage(RATE_LIMIT_CHANNEL, err.response.data.message);
+          return {
+            success: false,
+            message: "Rate limit exceeded",
+          };
+        } catch (err) {
+          console.log("rate limit error: ", err);
+        }
+      }
     } else {
       console.error("Error Message:", err.message);
     }

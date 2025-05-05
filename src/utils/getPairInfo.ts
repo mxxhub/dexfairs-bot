@@ -12,6 +12,8 @@ export const getPairInfo = async (chainId: string, pairAddress: string) => {
     const response = await axios.get(
       `https://api.dexscreener.io/latest/dex/pairs/${chainId}/${pairAddress}`
     );
+    console.log("status code: ", response.status);
+    console.log("status code in data", response.data);
 
     if (response?.status === 429) {
       try {
